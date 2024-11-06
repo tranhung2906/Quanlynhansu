@@ -2,8 +2,15 @@
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 session_start();
 // Show data
+$nhanvien_id = $_SESSION['nv_id'];
 include 'config/db_connect.php';
-$showData = "SELECT * FROM nhan_vien WHERE trang_thai=0";
+if ($_SESSION['level'] == 1) {
+    // Nếu là quản trị viên, lấy tất cả lịch tuần
+    $showData = "SELECT * FROM nhan_vien JOIN lich_tuan ON lich_tuan.nhan_vien_id = nhan_vien.id";
+} else {
+    // Nếu là nhân viên, chỉ lấy lịch tuần của nhân viên đăng nhập
+    $showData = "SELECT * FROM nhan_vien JOIN lich_tuan ON lich_tuan.nhan_vien_id = nhan_vien.id WHERE nhan_vien.id = '$nhanvien_id'";
+}
 $result = mysqli_query($conn, $showData);
 $arrShow = array();
 while ($row1 = mysqli_fetch_array($result)) {
@@ -44,8 +51,85 @@ while ($row1 = mysqli_fetch_array($result)) {
     <link rel="stylesheet" href=" plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href=" plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href=" plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-   
+    <style>
+    /* Thông báo chung */
+    .alert {
+      padding: 15px;
+      background-color: #4CAF50;
+      /* Màu nền */
+      color: white;
+      opacity: 1;
+      transition: opacity 0.6s;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      width: 300px;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    /* Thông báo thành công */
+    .alert-success {
+      background-color: #4CAF50;
+      /* Màu xanh thành công */
+      color: white;
+    }
+
+    /* Thông báo lỗi */
+    .alert-danger {
+      background-color: #f44336;
+      /* Màu đỏ lỗi */
+      color: white;
+    }
+
+    /* Khi thêm lớp này, opacity sẽ giảm dần và trượt ra khỏi màn hình */
+    .fade-out {
+      opacity: 0;
+      /* Mờ dần */
+      right: -300px;
+      /* Di chuyển ra khỏi màn hình từ bên phải */
+    }
+
+    /* Nút đóng */
+    .closebtn {
+      position: absolute;
+      top: 0;
+      right: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      color: white;
+    }
+  </style>
 </head>
+<?php
+$message = '';
+$type = '';
+
+if (isset($_SESSION['save'])) {
+  // Kiểm tra thông báo thêm
+  $message = $_SESSION['save'];
+  $type = 'success'; // Loại thông báo: success
+  unset($_SESSION['save']); // Xóa session sau khi hiển thị
+} elseif (isset($_SESSION['saveEdit'])) {
+  // Kiểm tra thông báo sửa
+  $message = $_SESSION['saveEdit'];
+  $type = 'success'; // Loại thông báo: success
+  unset($_SESSION['saveEdit']); // Xóa session sau khi hiển thị
+} elseif (isset($_SESSION['xoalichtuan'])) {
+  // Kiểm tra thông báo xóa
+  $message = $_SESSION['xoalichtuan'];
+  $type = 'success'; // Loại thông báo: success
+  unset($_SESSION['xoalichtuan']); // Xóa session sau khi hiển thị
+}
+?>
+<!-- Hiển thị thông báo nếu có -->
+<?php if ($message !== ''): ?>
+  <div id="notificationContainer">
+    <?php echo $message; ?>
+  </div>
+<?php endif; ?>
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <!-----------Modal end------>
@@ -58,104 +142,127 @@ while ($row1 = mysqli_fetch_array($result)) {
 
         <?php include "navbar2.php" ?>
 
-                <!-- SidebarSearch Form -->
-                <div class="form-inline">
-                    <div class="input-group" data-widget="sidebar-search">
-                        <input class="form-control form-control-sidebar" type="search" placeholder="Tìm kiếm..." aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-sidebar">
-                                <i class="fas fa-search fa-fw"></i>
-                            </button>
-                        </div>
+        <!-- SidebarSearch Form -->
+        <div class="form-inline">
+            <div class="input-group" data-widget="sidebar-search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-sidebar">
+                        <i class="fas fa-search fa-fw"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <?php include "menu.php"; ?>
+        <!-- /.sidebar-menu -->
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+    </aside>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Lịch tuần</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Quản lý lịch tuần</a></li>
+                            <li class="breadcrumb-item active">Danh sách lịch tuần</li>
+                        </ol>
                     </div>
                 </div>
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- Main content -->
+        <section class="content">
+            <!-- /.card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Danh sách lịch tuần</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Nhiệm vụ</th>
+                                <th>Nhân viên</th>
+                                <th>Ngày bắt đầu</th>
+                                <th>Ngày kết thúc</th>
+                                <th>Người tạo</th>
+                                <th>Ngày tạo </th>
+                                <th>Người sửa</th>
+                                <th>Ngày sửa</th>
+                                <th>Trạng thái</th>
+                                <?php
+                                isset($_SESSION['level']) ? $_SESSION['level'] : '';
+                                if ($_SESSION['level'] == 1) {
+                                    echo "<th>Sửa</th>";
+                                    echo "<th>Xóa</th>";
+                                } else if ($_SESSION['level'] == 0) {
+                                    echo "<th>Hoàn thành</th>";
+                                }
 
-       <!-- Sidebar Menu -->
-       <?php include "menu.php";  ?>
-     <!-- Sidebar Menu -->
-  </div>
-  <!-- /.sidebar -->
-        </aside>
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <section class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1>Nhân viên</h1>
-                        </div>
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="#">Nhân viên</a></li>
-                                <li class="breadcrumb-item active">Danh sách nhân viên nghỉ việc</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div><!-- /.container-fluid -->
-            </section>
-            <!-- Main content -->
-            <section class="content">
-                <!-- /.card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Danh sách nhân viên nghỉ việc</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Mã nhân viên</th>
-                                    <th>Họ tên</th>
-                                    <th>Ảnh</th>
-                                    <th>Giới tính</th>
-                                    <th>Ngày sinh</th>
-                                    <th>Nơi sinh</th>
-                                    <th>Số CCCD </th>
-                                    <th>Tình trạng</th>
-                                </tr>
-                            </thead>
-                            <?php
-                            $count = 1;
-                            foreach ($arrShow as $arrS) {
-                            ?>
-                                <tr>
-                                    <td><?php echo $count; ?></td>
-                                    <td><?php echo $arrS['ma_nv']; ?></td>
-                                    <td><?php echo $arrS['ten_nv']; ?></td>
-                                    <td><img src="uploads/<?php echo $arrS['hinh_anh']; ?>" style="width: 50px;"> </td>
-                                    <td><?php 
-                                    if($arrS['gioi_tinh'] == 1 ){
-                                        echo "Nam";
-                                    }else if($arrS['gioi_tinh'] == 0 ){
-                                        echo "Nữ";
+                                ?>
+                            </tr>
+                        </thead>
+                        <?php
+                        $count = 1;
+                        foreach ($arrShow as $arrS) {
+                        ?>
+                            <tr>
+                                <td><?php echo $count; ?></td>
+                                <td><?php echo $arrS['nhiem_vu']; ?></td>
+                                <td><?php echo $arrS['ten_nv']; ?></td>
+                                <td><?php echo $arrS['ngay_bat_dau']; ?></td>
+                                <td><?php echo $arrS['ngay_ket_thuc']; ?></td>
+                                <td><?php echo $arrS['nguoi_tao']; ?></td>
+                                <td><?php echo $arrS['ngay_tao']; ?></td>
+                                <td><?php echo $arrS['nguoi_sua']; ?></td>
+                                <td><?php echo $arrS['ngay_sua']; ?></td>
+                                <td><?php
+                                    if ($arrS['trang_thai_cv'] == 1) {
+                                        echo "Đã hoàn thành";
+                                    } else {
+                                        echo "Chưa hoàn thành";
                                     }
                                     ?></td>
-                                    <td><?php echo $arrS['ngay_sinh']; ?></td>
-                                    <td><?php echo $arrS['noi_sinh']; ?></td>
-                                    <td><?php echo $arrS['so_cmnd']; ?></td>
-                                    <td><?php 
-                                    if($arrS['trang_thai'] == 0 ){
-                                        echo "Đã nghỉ việc";
+                                <?php
+                                isset($_SESSION['level']) ? $_SESSION['level'] : '';
+                                if ($_SESSION['level'] == 1) {
+                                    echo "<td style='width: 10px;'><a href='sua_lich_tuan.php?id=" . $arrS['id'] . "' class='btn bg-orange btn-flat'><i class='fa fa-edit'></i></a></td>";
+                                    echo "<td style='width: 10px;'><a href='xoa_lich_tuan.php?id=" . $arrS['id'] . "' class='btn bg-maroon btn-flat' name='xoa' onclick='return confirm(\"Bạn có chắc chắn muốn xóa lịch tuần?\");'><i class='fa fa-trash'></i></a></td>";
+                                } else if ($_SESSION['level'] == 0) {
+                                    if($arrS['trang_thai_cv'] == 0){
+                                    echo "<td style='width: 10px;'><a href='cap_nhat_lich_tuan.php?id=" . $arrS['id'] . "' class='btn bg-info btn-flat'><i class='fa fa-check'></i></a></td>";
+                                    }else{
+                                        echo "<td style='width: 10px;'><a class='btn bg-info btn-flat'><i class='fa fa-check'></i></a></td>";  
                                     }
-                                    ?>
-                                </tr>
-                            <?php
-                                $count++;
-                            }
-                            ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.card-body -->
+                                }
+
+                                ?>
+                            </tr>
+                        <?php
+                            $count++;
+                        }
+                        ?>
+                        </tbody>
+                    </table>
                 </div>
-                <!-- /.card -->
-            </section>
-            <!-- /.content -->
-        </div>
-        <!-- /.content-wrapper -->
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
     </div>
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">

@@ -70,6 +70,8 @@ if ($result->num_rows > 0) {
     $user = $result->fetch_assoc();
 //Lưu id 
 $_SESSION['user_id'] = $user['id'];
+//Lưu id 
+$_SESSION['nv_id'] = $user['nhan_vien_id'];
 //Lưu họ tên
 $_SESSION['user_firstname'] = $user['ho'];
 $_SESSION['user_lastname'] = $user['ten'];
