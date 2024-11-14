@@ -83,7 +83,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="" class="nav-link">
+                            <a href="danh_sach_nv.php" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Danh sách nhân viên</p>
                             </a>
@@ -92,7 +92,53 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
+                        <i class="nav-icon fa fa-tasks"></i>
+                        <p>
+                            Chấm công
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="cham_cong.php" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Chấm công nhân viên</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="danh_sach_cham_cong.php" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Danh sách chấm công</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-money-bill"></i>
+                        <p>
+                            Ứng lương
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="tam_ung.php" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tạm ứng</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="danh_sach_cham_cong.php" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Danh sách ứng lương</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-money-bill-alt"></i>
                         <p>
                             Quản lý lương
                             <i class="fas fa-angle-left right"></i>
@@ -100,13 +146,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="pages/UI/general.html" class="nav-link">
+                            <a href="bang_luong.php" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Bảng tính lương</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/UI/icons.html" class="nav-link">
+                            <a href="tinh_luong.php" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Tính lương</p>
                             </a>
@@ -140,25 +186,47 @@
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-star"></i>
                         <p>
-                            Khen thưởng-Kỷ luật
+                            Khen thưởng
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="pages/tables/simple.html" class="nav-link">
+                            <a href="loai_kt_kl.php" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Khen thưởng</p>
+                                <p>Loại khen thưởng</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/tables/data.html" class="nav-link">
+                            <a href="tao_khen_thuong.php" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Kỷ luật</p>
+                                <p>Thêm khen thưởng</p>
                             </a>
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Kỷ luật
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="loai_ky_luat.php" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Loại kỷ luật</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="tao_ky_luat.php" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Thêm kỷ luật</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">

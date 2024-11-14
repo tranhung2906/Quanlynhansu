@@ -1,7 +1,7 @@
 <?php
 session_start();
 date_default_timezone_set('Asia/Ho_Chi_Minh');
-$malt = "MLT" . time();
+$mtu = "MTU" . time();
 // show data
 include "config/db_connect.php";
 $nv = "SELECT id, ma_nv, ten_nv FROM nhan_vien WHERE trang_thai <> 0";
@@ -71,7 +71,7 @@ while ($rowNV = mysqli_fetch_array($resultNV)) {
         </div>
 
         <!-- Sidebar Menu -->
-        <?php include "menu.php";  ?>
+        <?php include"menu.php"; ?>
     </div>
     <!-- /.sidebar -->
     </aside>
@@ -82,12 +82,12 @@ while ($rowNV = mysqli_fetch_array($resultNV)) {
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Lịch tuần</h1>
+                        <h1>Tạm ứng</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="index.php">Quản lý lịch tuần</a></li>
-                            <li class="breadcrumb-item active">Tạo lịch tuần</li>
+                            <li class="breadcrumb-item"><a href="index.php">Ứng lương</a></li>
+                            <li class="breadcrumb-item active">Tạm ứng</li>
                         </ol>
                     </div>
                 </div>
@@ -95,29 +95,18 @@ while ($rowNV = mysqli_fetch_array($resultNV)) {
         </section>
         <!-- Main content -->
         <section class="content">
-            <form action="tao_lich_tuan.php" method="post" enctype="multipart/form-data">
+            <form action="tam_ung.php" method="post">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
                             <div class="card-header">
                                 <h3 class="card-title">
-                                    Tạo lịch tuần
+                                    Tạm ứng lương
                                 </h3>
                             </div>
-                            <?php
-                            if ($_SESSION['level'] == 0) {
-                                echo '<div class="card-body">
-                                <div class=" alert alert-danger alert-dismissible">
-                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                              <h5><i class="icon fas fa-ban"></i> Thông báo!</h5>
-                                 Bạn không đủ thẩm quyền để thực hiện chức năng này!
-                               </div> 
-                                </div>';
-                            }
-                            ?>
                             <div class="card-body">
-                                <label for="exampleInputPassword1">Mã lịch tuần</label>
-                                <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $malt  ?>" name="malt" readonly>
+                                <label for="exampleInputPassword1">Mã ứng lương</label>
+                                <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $mtu  ?>" name="matu" readonly>
                             </div>
                             <div class="card-body">
                                 <label for="status">Nhân viên </label>
@@ -130,51 +119,17 @@ while ($rowNV = mysqli_fetch_array($resultNV)) {
                                     ?>
                                 </select>
                             </div>
+
                             <div class="card-body">
-                                <label for="exampleInputPassword1">Nhiệm vụ</label>
-                                <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Nhập nhiệm vụ cần giao" name="nhiemvu" required>
-                            </div>
-                            <div class="card-body">
-                                <label for="exampleInputPassword1">Ngày bắt đầu</label>
-                                <input type="text" class="form-control" id="exampleInputPassword1" readonly name="ngaybatdau" value="<?php echo date('Y-m-d H:i:s') ?>">
-                            </div>
-                            <div class="card-body">
-                                <label for="exampleInputPassword1">Ngày kết thúc</label>
-                                <input type="date" class="form-control" id="exampleInputPassword1" name="ngayketthuc">
-                            </div>
-                            <div class="card-body">
-                                <label for="exampleInputEmail1">Mô tả: </label>
-                                <textarea id="summernote" name="description">
-                                    </textarea>
-                            </div>
-                            <div class="card-body">
-                                <label for="status">Trạng thái công việc <b style="color: red;">*</b></label>
-                                <select class="form-control" name="status" id="status" required>
-                                    <option>--Chọn trạng thái--</option>
-                                    <option value="0">Chưa hoàn thành</option>
-                                    <option value="1">Đã hoàn thành</option>
-                                </select>
-                            </div>
-                            <div class="card-body">
-                                <label for="exampleInputPassword1">Người tạo</label>
-                                <input type="text" class="form-control" id="exampleInputPassword1"
-                                    value="<?php
-                                            echo isset($_SESSION['user_firstname']) ? $_SESSION['user_firstname'] : '';
-                                            echo ' ';
-                                            echo isset($_SESSION['user_lastname']) ? $_SESSION['user_lastname'] : '';
-                                            ?>"
-                                    name="nguoitao" readonly>
-                            </div>
-                            <div class="card-body">
-                                <label for="exampleInputPassword1">Ngày tạo</label>
-                                <input type="text" class="form-control" id="exampleInputPassword1" readonly name="ngaytao" value="<?php echo date('Y-m-d H:i:s') ?>">
+                                <label for="exampleInputEmail1">Tạm ứng: </label>
+                                <input type="text" class="form-control" id="exampleInputEmail1" name="tamUng" placeholder="Nhập số tiền muốn tạm ứng" value="0">
                             </div>
                             <div style="margin: 20px;">
                                 <?php
                                 if ($_SESSION['level'] == 1) {
-                                    echo "<button type='submit' class='btn btn-primary' name='taolichtuan'><i class='fa fa-plus'></i> Tạo lịch tuần</button>";
+                                    echo "<button type='submit' class='btn btn-primary' name='tamung'><i class='fa fa-plus'></i> Tạm ứng</button>";
                                 } else if ($_SESSION['level'] == 0) {
-                                    echo "<button type='button' class='btn btn-primary'><i class='fa fa-plus'></i> Tạo lịch tuần</button>";
+                                    echo "<button type='button' class='btn btn-primary'><i class='fa fa-plus'></i> Tạo chức vụ</button>";
                                 }
                                 ?>
                             </div>
@@ -184,43 +139,73 @@ while ($rowNV = mysqli_fetch_array($resultNV)) {
                 </div>
             </form>
             <!-- /.card -->
-
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Danh sách phòng ban</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <table id="example1" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Nhân viên </th>
+                <th>Số tiền ứng</th>
+                <th>Sửa</th>
+                <th>Xóa</th>
+              </tr>
+            </thead>
+            <?php
+            $count = 1;
+            // show danh sach ung luong
+            $sql = "SELECT * FROM nhan_vien JOIN tam_ung ON nhan_vien.id = tam_ung.nhan_vien_id";
+            $result = mysqli_query($conn, $sql);
+            while($row = mysqli_fetch_assoc($result)){
+            ?>
+              <tr>
+                <td><?php echo $count; ?></td>
+                <td><?php echo $row['ten_nv']; ?></td>
+                <td><?php echo number_format($row['so_tien_ung'], 0, '', ','); ?> VNĐ</td>
+                <td style="width: 10px;"><a href="edit_phongban.php?id=<?php echo $arrS['id']; ?>" class='btn bg-orange btn-flat'>
+                    <i class='fa fa-edit'></i>
+                  </a></td>
+                <td style="width: 10px;"><a href="delete_phongban.php?id=<?php echo $arrS['id']; ?>" class='btn bg-maroon btn-flat' name="xoa" onclick="return confirm('Bạn có chắc chắn muốn xóa phòng ban?');"><i class='fa fa-trash'></i></button></button></td>
+              </tr>
+            <?php
+              $count++;
+            }
+            ?>
+            </tbody>
+          </table>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
         </section>
         <?php
-        // Kết nối cơ sở dữ liệu
-        include 'config/db_connect.php';
-
-        // Kiểm tra nếu người dùng đã gửi form
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['taolichtuan'])) {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Lấy dữ liệu từ form
-            $malt = $_POST['malt'];
-            $nhanvien_id = $_POST['nhanvien'];
-            $nhiemvu = $_POST['nhiemvu'];
-            $ngaybatdau = $_POST['ngaybatdau'];
-            $ngayketthuc = $_POST['ngayketthuc'];
-            $description = $_POST['description'];
-            $status = $_POST['status'];
-            $nguoitao = $_POST['nguoitao'];
-            $ngaytao = $_POST['ngaytao'];
-            // Kiểm tra các trường cần thiết đã được nhập
-            if (!empty($nhanvien_id) && !empty($nhiemvu) && !empty($ngaybatdau) && !empty($ngayketthuc) && isset($status)) {
-                // Chuẩn bị câu lệnh SQL để thêm lịch tuần
-                $sql = "INSERT INTO lich_tuan (ma_lt, nhan_vien_id, nhiem_vu, ngay_bat_dau, ngay_ket_thuc, ghi_chu, trang_thai_cv, nguoi_tao, ngay_tao) 
-                VALUES ('$malt', '$nhanvien_id', '$nhiemvu', '$ngaybatdau', '$ngayketthuc', '$description', '$status', '$nguoitao', '$ngaytao')";
-                if (mysqli_query($conn, $sql)) {
-
-                    echo "<script>alert('Tạo lịch tuần thành công!'); window.location.href = 'danh_sach_lich_tuan.php';</script>";
-                } else {
-                    // Nếu có lỗi khi cập nhật, hiển thị thông báo lỗi
-                    echo "<script>alert('Có lỗi xảy ra !');</script>";
-                }
+            $matu = $_POST['matu'];
+            $nhanvien = $_POST['nhanvien'];
+            $tamUng = $_POST['tamUng']; // Tạm ứng
+            include 'config/db_connect.php'; // Kết nối cơ sở dữ liệu
+            if ($tamUng > 3000000) {
+                echo "<script>alert('Tạm ứng quá lớn!'); window.location.href='tam_ung.php';</script>";
+                exit();
             } else {
-                // Nếu các trường không đầy đủ, hiển thị thông báo
-                echo "<script>alert('Vui lòng nhập đầy đủ thông tin!');</script>";
+                $sql = "INSERT INTO tam_ung (ma_tam_ung, nhan_vien_id, so_tien_ung) 
+                VALUES ('$matu', '$nhanvien', $tamUng )";
+
+                if (mysqli_query($conn, $sql)) {
+                    echo "<script>alert('Tạm ứng thành công!');</script>";
+                } else {
+                    echo "<script>alert('Có lỗi xảy ra khi tính lương!');</script>";
+                }
             }
         }
-        mysqli_close($conn);
         ?>
+
+
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->

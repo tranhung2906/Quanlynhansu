@@ -6,10 +6,10 @@ $nhanvien_id = $_SESSION['nv_id'];
 include 'config/db_connect.php';
 if ($_SESSION['level'] == 1) {
     // Nếu là quản trị viên, lấy tất cả lịch tuần
-    $showData = "SELECT * FROM nhan_vien JOIN lich_tuan ON lich_tuan.nhan_vien_id = nhan_vien.id";
+    $showData = "SELECT * FROM nhan_vien JOIN cham_cong ON cham_cong.nhanvien_id = nhan_vien.id";
 } else {
     // Nếu là nhân viên, chỉ lấy lịch tuần của nhân viên đăng nhập
-    $showData = "SELECT * FROM nhan_vien JOIN lich_tuan ON lich_tuan.nhan_vien_id = nhan_vien.id WHERE nhan_vien.id = '$nhanvien_id'";
+    $showData = "SELECT * FROM nhan_vien JOIN cham_cong ON cham_cong.nhanvien_id = nhan_vien.id WHERE nhan_vien.id = '$nhanvien_id'";
 }
 $result = mysqli_query($conn, $showData);
 $arrShow = array();
@@ -114,24 +114,14 @@ while ($row1 = mysqli_fetch_array($result)) {
                         <thead>
                             <tr>
                                 <th>STT</th>
-                                <th>Nhiệm vụ</th>
                                 <th>Nhân viên</th>
-                                <th>Ngày bắt đầu</th>
-                                <th>Ngày kết thúc</th>
-                                <th>Người tạo</th>
-                                <th>Ngày tạo </th>
-                                <th>Người sửa</th>
-                                <th>Ngày sửa</th>
-                                <th>Trạng thái</th>
+                                <th>Số ngày công</th>
+                                <th>Ngày Chấm</th>
+                                <th>Tình trạng</th>
                                 <?php
-                                isset($_SESSION['level']) ? $_SESSION['level'] : '';
                                 if ($_SESSION['level'] == 1) {
                                     echo "<th>Sửa</th>";
-                                    echo "<th>Xóa</th>";
-                                } else if ($_SESSION['level'] == 0) {
-                                    echo "<th>Hoàn thành</th>";
                                 }
-
                                 ?>
                             </tr>
                         </thead>
@@ -141,34 +131,22 @@ while ($row1 = mysqli_fetch_array($result)) {
                         ?>
                             <tr>
                                 <td><?php echo $count; ?></td>
-                                <td><?php echo $arrS['nhiem_vu']; ?></td>
+                                
                                 <td><?php echo $arrS['ten_nv']; ?></td>
-                                <td><?php echo $arrS['ngay_bat_dau']; ?></td>
-                                <td><?php echo $arrS['ngay_ket_thuc']; ?></td>
-                                <td><?php echo $arrS['nguoi_tao']; ?></td>
-                                <td><?php echo $arrS['ngay_tao']; ?></td>
-                                <td><?php echo $arrS['nguoi_sua']; ?></td>
-                                <td><?php echo $arrS['ngay_sua']; ?></td>
+                                <td><?php echo $arrS['ngay_cong']; ?></td>
+                                <td><?php echo $arrS['ngay_cham']; ?></td>
                                 <td><?php
-                                    if ($arrS['trang_thai_cv'] == 1) {
-                                        echo "Đã hoàn thành";
+                                    if ($arrS['tinh_trang'] == 1) {
+                                        echo "Đi làm";
                                     } else {
-                                        echo "Chưa hoàn thành";
+                                        echo "Nghỉ làm";
                                     }
                                     ?></td>
                                 <?php
                                 isset($_SESSION['level']) ? $_SESSION['level'] : '';
                                 if ($_SESSION['level'] == 1) {
-                                    echo "<td style='width: 10px;'><a href='sua_lich_tuan.php?id=" . $arrS['id'] . "' class='btn bg-orange btn-flat'><i class='fa fa-edit'></i></a></td>";
-                                    echo "<td style='width: 10px;'><a href='xoa_lich_tuan.php?id=" . $arrS['id'] . "' class='btn bg-maroon btn-flat' name='xoa' onclick='return confirm(\"Bạn có chắc chắn muốn xóa lịch tuần?\");'><i class='fa fa-trash'></i></a></td>";
-                                } else if ($_SESSION['level'] == 0) {
-                                    if($arrS['trang_thai_cv'] == 0){
-                                    echo "<td style='width: 10px;'><a href='cap_nhat_lich_tuan.php?id=" . $arrS['id'] . "' class='btn bg-success btn-flat'><i class='fa fa-check'></i></a></td>";
-                                    }else{
-                                        echo "<td style='width: 10px;'><a class='btn bg-success btn-flat'><i class='fa fa-check'></i></a></td>";  
-                                    }
+                                    echo "<td style='width: 10px;'><a href='sua_cham_cong.php?id=" . $arrS['ma_cham_cong'] . "' class='btn bg-orange btn-flat'><i class='fa fa-edit'></i></a></td>";
                                 }
-
                                 ?>
                             </tr>
                         <?php
@@ -244,24 +222,6 @@ while ($row1 = mysqli_fetch_array($result)) {
     <script src=" plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src=" plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 </body>
-<script>
-    // JavaScript để xử lý mở/đóng menu
-    document.addEventListener('DOMContentLoaded', function() {
-        const menuItems = document.querySelectorAll('.nav-item > a');
-
-        menuItems.forEach(item => {
-            item.addEventListener('click', function(event) {
-                const parentItem = this.parentNode;
-                const subMenu = parentItem.querySelector('.nav-treeview');
-
-                if (subMenu) {
-                    event.preventDefault(); // Ngăn chặn sự kiện mặc định nếu có subMenu
-                    subMenu.style.display = (subMenu.style.display === 'none' || subMenu.style.display === '') ? 'block' : 'none';
-                }
-            });
-        });
-    });
-</script>
 <script>
     $(function() {
         // Summernote

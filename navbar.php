@@ -112,7 +112,13 @@
                                                   ?></a>
             <a href="#" style="font-size: 12px; line-height: 1.2;">
               <i class="fa fa-circle text-success" style="font-size: 10px; margin-right: 5px;"></i>
-              Đang hoạt động</a>
+              <?php
+                            if($_SESSION['level']==1){
+                                echo"Quản trị viên";
+                            }else{
+                                echo"Nhân viên";
+                            }
+                            ?></a>
           </div>
         </div>
 <!-- Navbar End -->

@@ -47,7 +47,7 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
             <img class="animation__shake" src=" dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
         </div>
 
-        <?php include "navbar2.php" ?>
+        <?php include "navbar.php" ?>
 
         <!-- SidebarSearch Form -->
         <div class="form-inline">

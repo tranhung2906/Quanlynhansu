@@ -52,8 +52,7 @@ $roomCode = "MBP" . time();
     <div class="preloader flex-column justify-content-center align-items-center">
       <img class="animation__shake" src=" dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
     </div>
-    <?php include "navbar2.php" ?>
-
+    <?php include "navbar.php" ?>
     <!-- SidebarSearch Form -->
     <div class="form-inline">
       <div class="input-group" data-widget="sidebar-search">
@@ -66,11 +65,11 @@ $roomCode = "MBP" . time();
       </div>
     </div>
 
-     <!-- Sidebar Menu -->
-     <?php include "menu.php";  ?>
-     <!-- Sidebar Menu -->
-    </div>
-    <!-- /.sidebar -->
+    <!-- Sidebar Menu -->
+    <?php include "menu.php";  ?>
+    <!-- Sidebar Menu -->
+  </div>
+  <!-- /.sidebar -->
   </aside>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -79,7 +78,7 @@ $roomCode = "MBP" . time();
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Tạo tài khoản</h1>
+            <h1>Tài khoản</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -101,6 +100,17 @@ $roomCode = "MBP" . time();
                   Tạo tài khoản
                 </h3>
               </div>
+              <?php
+              if ($_SESSION['level'] == 0) {
+                echo '<div class="card-body">
+                                <div class=" alert alert-danger alert-dismissible">
+                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              <h5><i class="icon fas fa-ban"></i> Thông báo!</h5>
+                                 Bạn không đủ thẩm quyền để thực hiện chức năng này!
+                               </div> 
+                                </div>';
+              }
+              ?>
               <div class="card-body">
                 <label for="exampleInputEmail1">Chọn ảnh: </label>
                 <input type="file" class="form-control" id="exampleInputEmail1" name="image">
@@ -152,7 +162,7 @@ $roomCode = "MBP" . time();
                 } else if ($_SESSION['level'] == 0) {
                   echo "<button type='button' class='btn btn-primary'><i class='fa fa-plus'></i> Tạo tài khoản mới</button>";
                 }
-                ?> 
+                ?>
               </div>
               <!-- /.col-->
             </div>

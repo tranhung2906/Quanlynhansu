@@ -115,7 +115,7 @@ if(isset($_SESSION['add'])) {
       <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
     </div>
 
-    <?php include "navbar2.php" ?>
+    <?php include "navbar.php" ?>
         <!-- SidebarSearch Form -->
         <div class="form-inline">
           <div class="input-group" data-widget="sidebar-search">

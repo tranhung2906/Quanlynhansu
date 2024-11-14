@@ -128,7 +128,7 @@ while ($rowChucVu = mysqli_fetch_array($resultChucVu)) {
       <img class="animation__shake" src=" dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
     </div>
 
-    <?php include "navbar2.php" ?>
+    <?php include "navbar.php" ?>
 
     <!-- SidebarSearch Form -->
     <div class="form-inline">
@@ -143,228 +143,7 @@ while ($rowChucVu = mysqli_fetch_array($resultChucVu)) {
     </div>
 
     <!-- Sidebar Menu -->
-    <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-tachometer-alt"></i>
-            <p>
-              Tổng quan
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="index.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Thống kê</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="./index2.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách nhân viên</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="all_account.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách tài khoản</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item menu-open">
-          <a href="#" class="nav-link active">
-            <i class="nav-icon fas fa-users"></i>
-            <p>
-              Nhân viên
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="quanly_phongban.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Phòng ban</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="them_chuc_vu.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Chức vụ</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="them_trinh_do.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Trình độ</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="them_chuyen_mon.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Chuyên môn</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="them_bang_cap.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Bằng cấp</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="them_loai_nv.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Loại nhân viên</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="add_staff.php" class="nav-link active">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Thêm mới nhân viên</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách nhân viên</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-money-bill"></i>
-            <p>
-              Quản lý lương
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="pages/UI/general.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Bảng tính lương</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="pages/UI/icons.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Tính lương</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-file"></i>
-            <p>
-              Quản lý công tác
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="pages/forms/general.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Tạo công tác</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="pages/forms/advanced.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách công tác</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-users"></i>
-            <p>
-              Nhóm nhân viên
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="pages/tables/simple.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Tạo nhóm</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="pages/tables/data.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách nhóm</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-star"></i>
-            <p>
-              Khen thưởng-Kỷ luật
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="pages/tables/simple.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Khen thưởng</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="pages/tables/data.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Kỷ luật</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-users"></i>
-            <p>
-              Tài khoản
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="pages/tables/simple.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Thông tin tài khoản</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="add_account.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Tạo tài khoản</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="all_account.php" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách tài khoản</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="pages/tables/data.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Đổi mật khẩu</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
+   <?php include"menu.php"; ?>
   </div>
   <!-- /.sidebar -->
   </aside>
@@ -397,11 +176,22 @@ while ($rowChucVu = mysqli_fetch_array($resultChucVu)) {
                   Thêm nhân viên
                 </h3>
               </div>
+              <?php
+              if ($_SESSION['level'] == 0) {
+                echo '<div class="card-body">
+                                <div class=" alert alert-danger alert-dismissible">
+                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              <h5><i class="icon fas fa-ban"></i> Thông báo!</h5>
+                                 Bạn không đủ thẩm quyền để thực hiện chức năng này!
+                               </div> 
+                                </div>';
+              }
+              ?>
               <div class="row">
                 <div class="col-md-6">
                   <div class="card-body">
                     <label for="exampleInputPassword1">Mã nhân viên: <b style="color: red;">*</b></label>
-                    <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $manv ?>" name="manv">
+                    <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $manv ?>" name="manv" readonly>
                   </div>
                   <div class="card-body">
                     <label for="exampleInputPassword1">Tên nhân viên: <b style="color: red;">*</b></label>
@@ -587,7 +377,7 @@ while ($rowChucVu = mysqli_fetch_array($resultChucVu)) {
                   echo "<button type='button' class='btn btn-primary'><i class='fa fa-plus'></i> Tạo tài khoản mới</button>";
                 }
                 ?>
-               
+
               </div>
             </div>
       </form>
@@ -622,7 +412,7 @@ while ($rowChucVu = mysqli_fetch_array($resultChucVu)) {
     $trinhdo = $_POST['trinhdo'];
     $chuyenmon = $_POST['chuyenmon'];
     $status = $_POST['status'];
-
+    $ngaytao = date('Y-m-d');
     // Xử lý ảnh
     $image = $_FILES['image']['name'];
     $target_dir = "uploads/";
@@ -640,8 +430,8 @@ while ($rowChucVu = mysqli_fetch_array($resultChucVu)) {
     }
 
     // Chuẩn bị câu truy vấn SQL
-    $sql = "INSERT INTO nhan_vien (ma_nv, ten_nv, biet_danh, hon_nhan_id, so_cmnd, ngay_cap_cmnd, noi_cap_cmnd, quoc_tich_id, ton_giao_id, dan_toc_id, loai_nv_id, bang_cap_id, ngay_sinh, noi_sinh, nguyen_quan, ho_khau, tam_tru, phong_ban_id, chuc_vu_id, trinh_do_id, chuyen_mon_id, trang_thai, hinh_anh)
-            VALUES ('$manv', '$tennv', '$bietdanh', '$honnhan', '$cccd', '$ngaycap', '$noicap', '$quoctich', '$tongiao', '$dantoc', '$loainv', '$bangcap', '$ngaysinh', '$noisinh', '$nguyenquan', '$hokhau', '$tamtru', '$phongban', '$chucvu', '$trinhdo', '$chuyenmon', '$status', '$image')";
+    $sql = "INSERT INTO nhan_vien (ma_nv, ten_nv, biet_danh, hon_nhan_id, so_cmnd, ngay_cap_cmnd, noi_cap_cmnd, quoc_tich_id, ton_giao_id, dan_toc_id, loai_nv_id, bang_cap_id, ngay_sinh, noi_sinh, nguyen_quan, ho_khau, tam_tru, phong_ban_id, chuc_vu_id, trinh_do_id, chuyen_mon_id, trang_thai, hinh_anh, ngay_tao)
+            VALUES ('$manv', '$tennv', '$bietdanh', '$honnhan', '$cccd', '$ngaycap', '$noicap', '$quoctich', '$tongiao', '$dantoc', '$loainv', '$bangcap', '$ngaysinh', '$noisinh', '$nguyenquan', '$hokhau', '$tamtru', '$phongban', '$chucvu', '$trinhdo', '$chuyenmon', '$status', '$image', '$ngay_tao')";
 
     // Thực thi câu lệnh
     if (mysqli_query($conn, $sql)) {

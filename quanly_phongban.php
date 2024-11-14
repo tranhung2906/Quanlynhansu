@@ -1,4 +1,5 @@
 <?php
+session_start();
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 require_once('config/db_connect.php');
 $sql = "Select * from tbl_menu WHERE is_Active = 'Yes';";
@@ -20,8 +21,8 @@ while ($row1 = mysqli_fetch_array($result)) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>QUẢN LÝ NHÂN SỰ</title>
-    <!-- Favicon  -->
-    <link rel="icon" href="img/logo_web.png">
+  <!-- Favicon  -->
+  <link rel="icon" href="img/logo_web.png">
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -29,104 +30,25 @@ while ($row1 = mysqli_fetch_array($result)) {
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
-  <!-- summernote -->
-  <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
-  <!-- DataTables -->
-  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-  <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-  <style>
-    /* Thông báo chung */
-    .alert {
-      padding: 15px;
-      background-color: #4CAF50;
-      /* Màu nền */
-      color: white;
-      opacity: 1;
-      transition: opacity 0.6s;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      width: 300px;
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 9999;
-      text-align: center;
-    }
-
-    /* Thông báo thành công */
-    .alert-success {
-      background-color: #4CAF50;
-      /* Màu xanh thành công */
-      color: white;
-    }
-
-    /* Thông báo lỗi */
-    .alert-danger {
-      background-color: #f44336;
-      /* Màu đỏ lỗi */
-      color: white;
-    }
-
-    /* Khi thêm lớp này, opacity sẽ giảm dần và trượt ra khỏi màn hình */
-    .fade-out {
-      opacity: 0;
-      /* Mờ dần */
-      right: -300px;
-      /* Di chuyển ra khỏi màn hình từ bên phải */
-    }
-
-    /* Nút đóng */
-    .closebtn {
-      position: absolute;
-      top: 0;
-      right: 10px;
-      font-size: 20px;
-      cursor: pointer;
-      color: white;
-    }
-  </style>
+     <!-- Tempusdominus Bootstrap 4 -->
+     <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="dist/css/adminlte.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 </head>
-<?php
-session_start();
-$message = '';
-$type = '';
-
-if (isset($_SESSION['save'])) {
-  // Kiểm tra thông báo thêm
-  $message = $_SESSION['save'];
-  $type = 'success'; // Loại thông báo: success
-  unset($_SESSION['save']); // Xóa session sau khi hiển thị
-} elseif (isset($_SESSION['saveEdit'])) {
-  // Kiểm tra thông báo sửa
-  $message = $_SESSION['saveEdit'];
-  $type = 'success'; // Loại thông báo: success
-  unset($_SESSION['saveEdit']); // Xóa session sau khi hiển thị
-} elseif (isset($_SESSION['xoa'])) {
-  // Kiểm tra thông báo xóa
-  $message = $_SESSION['xoa'];
-  $type = 'success'; // Loại thông báo: success
-  unset($_SESSION['xoa']); // Xóa session sau khi hiển thị
-}
-?>
-<!-- Hiển thị thông báo nếu có -->
-<?php if ($message !== ''): ?>
-  <div id="notificationContainer">
-    <?php echo $message; ?>
-  </div>
-<?php endif; ?>
 
 <body class="hold-transition sidebar-mini layout-fixed">
   <div class="wrapper">
@@ -136,7 +58,7 @@ if (isset($_SESSION['save'])) {
       <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
     </div>
 
-    <?php include "navbar2.php" ?>
+    <?php include "navbar.php" ?>
 
     <!-- SidebarSearch Form -->
     <div class="form-inline">
@@ -150,9 +72,9 @@ if (isset($_SESSION['save'])) {
       </div>
     </div>
 
-       <!-- Sidebar Menu -->
-       <?php include "menu.php";  ?>
-     <!-- Sidebar Menu -->
+    <!-- Sidebar Menu -->
+    <?php include "menu.php";  ?>
+    <!-- Sidebar Menu -->
   </div>
   <!-- /.sidebar -->
   </aside>
@@ -184,6 +106,18 @@ if (isset($_SESSION['save'])) {
                 <h3 class="card-title">
                   Tạo phòng ban
                 </h3>
+              </div>
+              <?php
+              if ($_SESSION['level'] == 0) {
+                echo '<div class="card-body">
+                                <div class=" alert alert-danger alert-dismissible">
+                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              <h5><i class="icon fas fa-ban"></i> Thông báo!</h5>
+                                 Bạn không đủ thẩm quyền để thực hiện chức năng này!
+                               </div> 
+                                </div>';
+              }
+              ?>
               </div>
               <div class="card-body">
                 <label for="exampleInputEmail1">Mã phòng ban: </label>
@@ -327,55 +261,55 @@ if (isset($_SESSION['save'])) {
   </div>
   <!-- ./wrapper -->
 
-  <!-- jQuery -->
-  <script src="plugins/jquery/jquery.min.js"></script>
-  <!-- jQuery UI 1.11.4 -->
-  <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
-  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-  <script>
-    $.widget.bridge('uibutton', $.ui.button)
-  </script>
-  <!-- Bootstrap 4 -->
-  <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- ChartJS -->
-  <script src="plugins/chart.js/Chart.min.js"></script>
-  <!-- Sparkline -->
-  <script src="plugins/sparklines/sparkline.js"></script>
-  <!-- JQVMap -->
-  <script src="plugins/jqvmap/jquery.vmap.min.js"></script>
-  <script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-  <!-- jQuery Knob Chart -->
-  <script src="plugins/jquery-knob/jquery.knob.min.js"></script>
-  <!-- daterangepicker -->
-  <script src="plugins/moment/moment.min.js"></script>
-  <script src="plugins/daterangepicker/daterangepicker.js"></script>
-  <!-- Tempusdominus Bootstrap 4 -->
-  <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-  <!-- Summernote -->
-  <script src="plugins/summernote/summernote-bs4.min.js"></script>
-  <!-- overlayScrollbars -->
-  <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-  <!-- AdminLTE App -->
-  <script src="dist/js/adminlte.js"></script>
-  <!-- AdminLTE for demo purposes -->
-  <script src="dist/js/demo.js"></script>
-  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-  <script src="dist/js/pages/dashboard.js"></script>
-  <!-- Summernote -->
-  <script src="plugins/summernote/summernote-bs4.min.js"></script>
-  <!-- DataTables  & Plugins -->
-  <script src="plugins/datatables/jquery.dataTables.min.js"></script>
-  <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-  <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-  <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-  <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-  <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-  <script src="plugins/jszip/jszip.min.js"></script>
-  <script src="plugins/pdfmake/pdfmake.min.js"></script>
-  <script src="plugins/pdfmake/vfs_fonts.js"></script>
-  <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-  <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-  <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+ <!-- jQuery -->
+ <script src="plugins/jquery/jquery.min.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button)
+    </script>
+    <!-- Bootstrap 4 -->
+    <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- ChartJS -->
+    <script src="plugins/chart.js/Chart.min.js"></script>
+    <!-- Sparkline -->
+    <script src="plugins/sparklines/sparkline.js"></script>
+    <!-- JQVMap -->
+    <script src="plugins/jqvmap/jquery.vmap.min.js"></script>
+    <script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="plugins/jquery-knob/jquery.knob.min.js"></script>
+    <!-- daterangepicker -->
+    <script src="plugins/moment/moment.min.js"></script>
+    <script src="plugins/daterangepicker/daterangepicker.js"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Summernote -->
+    <script src="plugins/summernote/summernote-bs4.min.js"></script>
+    <!-- overlayScrollbars -->
+    <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="dist/js/adminlte.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="dist/js/demo.js"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <script src="dist/js/pages/dashboard.js"></script>
+    <!-- Summernote -->
+    <script src="plugins/summernote/summernote-bs4.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="plugins/jszip/jszip.min.js"></script>
+    <script src="plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 </body>
 <script>
   // JavaScript để xử lý mở/đóng menu
@@ -408,35 +342,6 @@ if (isset($_SESSION['save'])) {
   })
 </script>
 <script>
-  // Hàm tạo thông báo
-  function showAlert(message, type = 'alert-success') {
-    var alertBox = document.createElement('div');
-    alertBox.classList.add('alert', type);
-
-    alertBox.innerHTML = message + '<span class="closebtn" onclick="this.parentElement.style.display=\'none\';">&times;</span>';
-
-    // Thêm thông báo vào container
-    document.getElementById('notificationContainer').appendChild(alertBox);
-
-    // Tự động ẩn toàn bộ thông báo sau 3 giây
-    setTimeout(function() {
-      alertBox.classList.add('fade-out'); // Thêm class để làm mờ dần và trượt ra
-      setTimeout(function() {
-        alertBox.remove(); // Xóa hoàn toàn thông báo sau khi mờ dần
-      }, 600); // Phải phù hợp với thời gian `transition` trong CSS (0.6 giây)
-    }, 3000); // 3 giây trước khi bắt đầu mờ dần
-  }
-
-  // PHP truyền thông báo sang JavaScript
-  var message = "<?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>";
-  var type = "<?php echo htmlspecialchars($type === 'success' ? 'alert-success' : 'alert-danger', ENT_QUOTES, 'UTF-8'); ?>";
-
-  // Nếu có thông báo từ PHP, hiển thị thông báo
-  if (message) {
-    showAlert(message, type);
-  }
-</script>
-<script>
   $(function() {
     $("#example1").DataTable({
       "responsive": true,
@@ -454,5 +359,4 @@ if (isset($_SESSION['save'])) {
     });
   });
 </script>
-
 </html>

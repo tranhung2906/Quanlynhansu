@@ -55,7 +55,7 @@ $row1 = mysqli_fetch_array($result);
       <img class="animation__shake" src=" dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
     </div>
 
-    <?php include "navbar2.php" ?>
+    <?php include "navbar.php" ?>
 
     <!-- SidebarSearch Form -->
     <div class="form-inline">

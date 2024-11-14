@@ -58,200 +58,211 @@ while ($row1 = mysqli_fetch_array($result)) {
             <img class="animation__shake" src=" dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
         </div>
 
-        <?php include "navbar2.php" ?>
+        <?php include "navbar.php" ?>
 
-                <!-- SidebarSearch Form -->
-                <div class="form-inline">
-                    <div class="input-group" data-widget="sidebar-search">
-                        <input class="form-control form-control-sidebar" type="search" placeholder="Tìm kiếm..." aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-sidebar">
-                                <i class="fas fa-search fa-fw"></i>
-                            </button>
-                        </div>
+        <!-- SidebarSearch Form -->
+        <div class="form-inline">
+            <div class="input-group" data-widget="sidebar-search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-sidebar">
+                        <i class="fas fa-search fa-fw"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <?php include "menu.php";  ?>
+        <!-- Sidebar Menu -->
+    </div>
+    <!-- /.sidebar -->
+    </aside>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Loại nhân viên</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="index.php">Nhân viên</a></li>
+                            <li class="breadcrumb-item active">Loại nhân viên</li>
+                        </ol>
                     </div>
                 </div>
-
-                      <!-- Sidebar Menu -->
-     <?php include "menu.php";  ?>
-     <!-- Sidebar Menu -->
-  </div>
-  <!-- /.sidebar -->
-        </aside>
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <section class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1>Loại nhân viên</h1>
-                        </div>
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="index.php">Nhân viên</a></li>
-                                <li class="breadcrumb-item active">Loại nhân viên</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div><!-- /.container-fluid -->
-            </section>
-            <!-- Main content -->
-            <section class="content">
-                <form action="them_loai_nv.php" method="post" enctype="multipart/form-data">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card card-outline card-info">
-                                <div class="card-header">
-                                    <h3 class="card-title">
-                                        Thêm loại nhân viên
-                                    </h3>
-                                </div>
-                                <div class="card-body">
-                                    <label for="exampleInputPassword1">Mã loại nhân viên</label>
-                                    <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $maloainv  ?>" name="maloai" readonly>
-                                </div>
-                                <div class="card-body">
-                                    <label for="exampleInputPassword1">Tên loại nhân viên </label>
-                                    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Nhập tên loại nhân viên" name="tenloai" required>
-                                </div>
-                                <div class="card-body">
-                                    <label for="exampleInputEmail1">Mô tả: </label>
-                                    <textarea id="summernote" name="description">
-                                    </textarea>
-                                </div>
-                                <div class="card-body">
-                                    <label for="exampleInputPassword1">Người tạo</label>
-                                    <input type="text" class="form-control" id="exampleInputPassword1"
-                                        value="<?php
-                                                echo isset($_SESSION['user_firstname']) ? $_SESSION['user_firstname'] : '';
-                                                echo ' ';
-                                                echo isset($_SESSION['user_lastname']) ? $_SESSION['user_lastname'] : '';
-                                                ?>"
-                                        name="nguoitao" readonly>
-                                </div>
-                                <div class="card-body">
-                                    <label for="exampleInputPassword1">Ngày tạo</label>
-                                    <input type="text" class="form-control" id="exampleInputPassword1" readonly name="ngaytao" value="<?php echo date('Y-m-d H:i:s') ?>">
-                                </div>
-                                <div style="margin: 20px;">
-                                <?php 
-                                    if ($_SESSION['level'] == 1){
-                                         echo "<button type='submit' class='btn btn-primary' name='themloainv'><i class='fa fa-plus'></i> Tạo loại nhân viên</button>";
-                                    }else if($_SESSION['level'] == 0){
-                                        echo "<button type='button' class='btn btn-primary'><i class='fa fa-plus'></i> Tạo loại nhân viên</button>";
-                                        }
-                                        ?>
-                                
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- Main content -->
+        <section class="content">
+            <form action="them_loai_nv.php" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-outline card-info">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    Thêm loại nhân viên
+                                </h3>
                             </div>
-                                <!-- /.col-->
-                            </div>                         
-                        </div>
-                    </div>
-                </form>
-                <!-- /.card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Danh sách loại nhân viên</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <table id="example1" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Mã loại</th>
-                                    <th>Tên loại </th>
-                                    <th>Mô tả</th>
-                                    <th>Người tạo</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Người sửa</th>
-                                    <th>Ngày sửa</th>
-                                    <th>Sửa</th>
-                                    <th>Xóa</th>
-                                </tr>
-                            </thead>
                             <?php
-                            $count = 1;
-                            foreach ($arrShow as $arrS) {
-                            ?>
-                                <tr>
-                                    <td><?php echo $count; ?></td>
-                                    <td><?php echo $arrS['ma_loai_nv']; ?></td>
-                                    <td><?php echo $arrS['ten_loai_nv']; ?></td>
-                                    <td><?php echo $arrS['ghi_chu']; ?></td>
-                                    <td><?php echo $arrS['nguoi_tao']; ?></td>
-                                    <td><?php echo $arrS['ngay_tao']; ?></td>
-                                    <td><?php echo $arrS['nguoi_sua']; ?></td>
-                                    <td><?php echo $arrS['ngay_sua']; ?></td>
-                                    <?php 
-                                    if ($_SESSION['level'] == 1){
-                                         echo "<td style='width: 10px;'><a href='sua_loai_nv.php?id=" . $arrS['id'] . "' class='btn bg-orange btn-flat' name='editaccount'><i class='fa fa-edit'></i></a></td>";
-                                    }else if($_SESSION['level'] == 0){
-                                        echo "<td style='width: 10px;'><a class='btn bg-orange btn-flat'><i class='fa fa-edit'></i></a></td>";
-                                        }
-                                        ?>
-                                    <?php
-                                    isset($_SESSION['level']) ? $_SESSION['level'] : '';
-                                    if ($_SESSION['level'] == 1) {
-                                        echo "<td style='width: 10px;'><a href='xoa_loai_nv.php?id=" . $arrS['id'] . "' class='btn bg-maroon btn-flat' name='xoa' onclick='return confirm(\"Bạn có chắc chắn muốn xóa trình độ?\");'><i class='fa fa-trash'></i></a></td>";
-                                    } else if ($_SESSION['level'] == 0) {
-                                        echo "<td style='width: 10px;'><a  class='btn bg-maroon btn-flat'><i class='fa fa-trash'></i></a></td>";
-                                    }
-
-                                    ?>
-                                </tr>
-                            <?php
-                                $count++;
+                            if ($_SESSION['level'] == 0) {
+                                echo '<div class="card-body">
+                                <div class=" alert alert-danger alert-dismissible">
+                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              <h5><i class="icon fas fa-ban"></i> Thông báo!</h5>
+                                 Bạn không đủ thẩm quyền để thực hiện chức năng này!
+                               </div> 
+                                </div>';
                             }
                             ?>
-                            </tbody>
-                        </table>
+                            <div class="card-body">
+                                <label for="exampleInputPassword1">Mã loại nhân viên</label>
+                                <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $maloainv  ?>" name="maloai" readonly>
+                            </div>
+                            <div class="card-body">
+                                <label for="exampleInputPassword1">Tên loại nhân viên </label>
+                                <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Nhập tên loại nhân viên" name="tenloai" required>
+                            </div>
+                            <div class="card-body">
+                                <label for="exampleInputEmail1">Mô tả: </label>
+                                <textarea id="summernote" name="description">
+                                    </textarea>
+                            </div>
+                            <div class="card-body">
+                                <label for="exampleInputPassword1">Người tạo</label>
+                                <input type="text" class="form-control" id="exampleInputPassword1"
+                                    value="<?php
+                                            echo isset($_SESSION['user_firstname']) ? $_SESSION['user_firstname'] : '';
+                                            echo ' ';
+                                            echo isset($_SESSION['user_lastname']) ? $_SESSION['user_lastname'] : '';
+                                            ?>"
+                                    name="nguoitao" readonly>
+                            </div>
+                            <div class="card-body">
+                                <label for="exampleInputPassword1">Ngày tạo</label>
+                                <input type="text" class="form-control" id="exampleInputPassword1" readonly name="ngaytao" value="<?php echo date('Y-m-d H:i:s') ?>">
+                            </div>
+                            <div style="margin: 20px;">
+                                <?php
+                                if ($_SESSION['level'] == 1) {
+                                    echo "<button type='submit' class='btn btn-primary' name='themloainv'><i class='fa fa-plus'></i> Tạo loại nhân viên</button>";
+                                } else if ($_SESSION['level'] == 0) {
+                                    echo "<button type='button' class='btn btn-primary'><i class='fa fa-plus'></i> Tạo loại nhân viên</button>";
+                                }
+                                ?>
+
+                            </div>
+                            <!-- /.col-->
+                        </div>
                     </div>
-                    <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
+            </form>
+            <!-- /.card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Danh sách loại nhân viên</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Mã loại</th>
+                                <th>Tên loại </th>
+                                <th>Mô tả</th>
+                                <th>Người tạo</th>
+                                <th>Ngày tạo</th>
+                                <th>Người sửa</th>
+                                <th>Ngày sửa</th>
+                                <th>Sửa</th>
+                                <th>Xóa</th>
+                            </tr>
+                        </thead>
+                        <?php
+                        $count = 1;
+                        foreach ($arrShow as $arrS) {
+                        ?>
+                            <tr>
+                                <td><?php echo $count; ?></td>
+                                <td><?php echo $arrS['ma_loai_nv']; ?></td>
+                                <td><?php echo $arrS['ten_loai_nv']; ?></td>
+                                <td><?php echo $arrS['ghi_chu']; ?></td>
+                                <td><?php echo $arrS['nguoi_tao']; ?></td>
+                                <td><?php echo $arrS['ngay_tao']; ?></td>
+                                <td><?php echo $arrS['nguoi_sua']; ?></td>
+                                <td><?php echo $arrS['ngay_sua']; ?></td>
+                                <?php
+                                if ($_SESSION['level'] == 1) {
+                                    echo "<td style='width: 10px;'><a href='sua_loai_nv.php?id=" . $arrS['id'] . "' class='btn bg-orange btn-flat' name='editaccount'><i class='fa fa-edit'></i></a></td>";
+                                } else if ($_SESSION['level'] == 0) {
+                                    echo "<td style='width: 10px;'><a class='btn bg-orange btn-flat'><i class='fa fa-edit'></i></a></td>";
+                                }
+                                ?>
+                                <?php
+                                isset($_SESSION['level']) ? $_SESSION['level'] : '';
+                                if ($_SESSION['level'] == 1) {
+                                    echo "<td style='width: 10px;'><a href='xoa_loai_nv.php?id=" . $arrS['id'] . "' class='btn bg-maroon btn-flat' name='xoa' onclick='return confirm(\"Bạn có chắc chắn muốn xóa trình độ?\");'><i class='fa fa-trash'></i></a></td>";
+                                } else if ($_SESSION['level'] == 0) {
+                                    echo "<td style='width: 10px;'><a  class='btn bg-maroon btn-flat'><i class='fa fa-trash'></i></a></td>";
+                                }
 
-            </section>
-            <?php
-// Kết nối cơ sở dữ liệu
-include 'config/db_connect.php';
+                                ?>
+                            </tr>
+                        <?php
+                            $count++;
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
 
-// Kiểm tra nếu form đã được gửi
-if (isset($_POST['themloainv'])) {
-    // Lấy dữ liệu từ form
-    $maloai = $_POST['maloai']; // Mã trình độ
-    $tenloai = $_POST['tenloai']; // Tên trình độ
-    $mota = $_POST['description']; // Mô tả trình độ
-    $nguoitao = $_POST['nguoitao']; // Người tạo
-    $ngaytao = $_POST['ngaytao']; // Ngày tạo
+        </section>
+        <?php
+        // Kết nối cơ sở dữ liệu
+        include 'config/db_connect.php';
 
-    // Kiểm tra nếu các trường bắt buộc có dữ liệu
-    if (!empty($tenloai)) {
-        // Tạo câu truy vấn để chèn trình độ mới vào cơ sở dữ liệu
-        $sql = "INSERT INTO loai_nv (ma_loai_nv, ten_loai_nv, ghi_chu, nguoi_tao, ngay_tao)
+        // Kiểm tra nếu form đã được gửi
+        if (isset($_POST['themloainv'])) {
+            // Lấy dữ liệu từ form
+            $maloai = $_POST['maloai']; // Mã trình độ
+            $tenloai = $_POST['tenloai']; // Tên trình độ
+            $mota = $_POST['description']; // Mô tả trình độ
+            $nguoitao = $_POST['nguoitao']; // Người tạo
+            $ngaytao = $_POST['ngaytao']; // Ngày tạo
+
+            // Kiểm tra nếu các trường bắt buộc có dữ liệu
+            if (!empty($tenloai)) {
+                // Tạo câu truy vấn để chèn trình độ mới vào cơ sở dữ liệu
+                $sql = "INSERT INTO loai_nv (ma_loai_nv, ten_loai_nv, ghi_chu, nguoi_tao, ngay_tao)
                 VALUES ('$maloai', '$tenloai', '$mota', '$nguoitao', '$ngaytao')";
 
-        // Thực thi câu truy vấn
-        if (mysqli_query($conn, $sql)) {
-            // Chuyển hướng sau khi thành công
-            echo "<script>alert('Loại nhân viên đã được thêm thành công'); window.location.href='them_loai_nv.php';</script>";
-        } else {
-            echo "<script>alert('Đã xảy ra lỗi trong quá trình thêm : " . mysqli_error($conn) . "');</script>";
+                // Thực thi câu truy vấn
+                if (mysqli_query($conn, $sql)) {
+                    // Chuyển hướng sau khi thành công
+                    echo "<script>alert('Loại nhân viên đã được thêm thành công'); window.location.href='them_loai_nv.php';</script>";
+                } else {
+                    echo "<script>alert('Đã xảy ra lỗi trong quá trình thêm : " . mysqli_error($conn) . "');</script>";
+                }
+            } else {
+                echo "<script>alert('Vui lòng nhập tên trình độ.');</script>";
+            }
         }
-    } else {
-        echo "<script>alert('Vui lòng nhập tên trình độ.');</script>";
-    }
-}
 
-// Đóng kết nối cơ sở dữ liệu
-mysqli_close($conn);
-?>
+        // Đóng kết nối cơ sở dữ liệu
+        mysqli_close($conn);
+        ?>
 
 
-            <!-- /.content -->
-        </div>
-        <!-- /.content-wrapper -->
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
     </div>
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
@@ -324,21 +335,22 @@ mysqli_close($conn);
     })
 </script>
 <script>
-  $(function() {
-    $("#example1").DataTable({
-      "responsive": true,
-      "lengthChange": false,
-      "autoWidth": false,
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": true,
-      "ordering": true,
-      "info": true,
-      "autoWidth": true,
-      "responsive": true,
+    $(function() {
+        $("#example1").DataTable({
+            "responsive": true,
+            "lengthChange": false,
+            "autoWidth": false,
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "responsive": true,
+        });
     });
-  });
 </script>
+
 </html>

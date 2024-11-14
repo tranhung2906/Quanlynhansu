@@ -82,8 +82,8 @@ while ($row2 = mysqli_fetch_array($result1)) {
     </div>
     <!-- Sidebar Menu -->
     <?php
-            include "menu.php";
-       ?>
+    include "menu.php";
+    ?>
   </div>
   <!-- /.sidebar -->
   </aside>
@@ -208,45 +208,185 @@ while ($row2 = mysqli_fetch_array($result1)) {
       <!-- Main row -->
       <div class="row">
         <!-- Left col -->
-        <section class="col-lg-6 connectedSortable">
-          <!-- /.card -->
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Danh sách phòng ban</h3>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                  <tr>
-                    <th>STT</th>
-                    <th>Mã phòng </th>
-                    <th>Tên phòng</th>
-                    <th>Ngày tạo</th>
-                  </tr>
-                </thead>
+        <section class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6">
+                <!-- AREA CHART -->
+                <div class="card card-primary">
+                  <div class="card-header">
+                    <h3 class="card-title">Area Chart</h3>
+
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart">
+                      <canvas id="areaChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <!-- DONUT CHART -->
+                <div class="card card-danger">
+                  <div class="card-header">
+                    <h3 class="card-title">Donut Chart</h3>
+
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
                 <?php
-                $count = 1;
-                foreach ($arrShow as $arrS) {
-                ?>
-                  <tr>
-                    <td><?php echo $count; ?></td>
-                    <td><?php echo $arrS['ma_phong_ban']; ?></td>
-                    <td><?php echo $arrS['ten_phong_ban']; ?></td>
-                    <td><?php echo $arrS['ngay_tao']; ?></td>
-                  </tr>
-                <?php
-                  $count++;
+                // Kết nối cơ sở dữ liệu
+                include('config/db_connect.php');
+
+                $sqll = "SELECT pb.ten_phong_ban, COUNT(*) as count 
+                        FROM nhan_vien nv
+                        JOIN phongban pb ON nv.phong_ban_id = pb.id
+                        GROUP BY nv.phong_ban_id";
+                $resultt = mysqli_query($conn, $sqll);
+                $labels = [];
+                $data = [];
+
+                // Nếu có dữ liệu, đưa vào mảng labels và data
+                while ($roww = mysqli_fetch_assoc($resultt)) {
+                  $ten_phong_ban = $roww['ten_phong_ban'];
+                  $count = $roww['count'];
+                  $labels[] = "$ten_phong_ban";
+                  $data[] = $count;
                 }
+                // Chuyển mảng PHP sang JavaScript
+                $labels_json = json_encode($labels);
+                $data_json = json_encode($data);
                 ?>
-                </tbody>
-              </table>
+                <!-- PIE CHART -->
+                <div class="card card-danger">
+                  <div class="card-header">
+                    <h3 class="card-title">Số lượng nhân viên theo phòng ban</h3>
+                  </div>
+                  <div class="card-body">
+                    <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+              </div>
+              <!-- /.col (LEFT) -->
+              <div class="col-md-6">
+                <?php
+                include "config/db_connect.php";
+                $sqll1 = "SELECT
+    MONTH(ngay_tao) AS month,
+    COUNT(CASE WHEN ngay_tao IS NOT NULL AND trang_thai = 1 THEN 1 END) AS new_hires,  -- Nhân viên mới
+    COUNT(CASE WHEN ngay_sua IS NOT NULL AND trang_thai = 0 THEN 1 END) AS resignations  -- Nhân viên nghỉ việc
+    FROM nhan_vien
+    GROUP BY MONTH(ngay_tao)
+    ORDER BY month ASC;";
+                $resultt1 = mysqli_query($conn, $sqll1);
+                $new_hires = [];
+                $resignations = [];
+                $months = [];
+
+                // Lấy dữ liệu vào các mảng để hiển thị trên biểu đồ
+                while ($roww1 = mysqli_fetch_assoc($resultt1)) {
+                  $months[] = "Tháng " . $roww1['month'];
+                  $new_hires[] = $roww1['new_hires'];
+                  $resignations[] = $roww1['resignations'];
+                }
+
+                // Chuyển mảng PHP sang JavaScript
+                $months_json = json_encode($months);
+                $new_hires_json = json_encode($new_hires);
+                $resignations_json = json_encode($resignations);
+                ?>
+                <!-- LINE CHART -->
+                <div class="card card-info">
+                  <div class="card-header">
+                    <h3 class="card-title">Tình Trạng Nhân Sự</h3>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart">
+                      <canvas id="lineChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <!-- BAR CHART -->
+                <div class="card card-success">
+                  <div class="card-header">
+                    <h3 class="card-title">Bar Chart</h3>
+
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart">
+                      <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+                <!-- STACKED BAR CHART -->
+                <div class="card card-success">
+                  <div class="card-header">
+                    <h3 class="card-title">Stacked Bar Chart</h3>
+
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart">
+                      <canvas id="stackedBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+
+              </div>
+              <!-- /.col (RIGHT) -->
             </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
+            <!-- /.row -->
+          </div><!-- /.container-fluid -->
         </section>
-        <!-- right col (We are only adding the ID to make the widgets sortable)-->
+        <!-- /.content -->
+          <!-- right col (We are only adding the ID to make the widgets sortable)-->
         <section class="col-lg-6 connectedSortable">
           <!-- /.card -->
           <div class="card">
@@ -273,6 +413,44 @@ while ($row2 = mysqli_fetch_array($result1)) {
                     <td><?php echo $arrS1['ma_chuc_vu']; ?></td>
                     <td><?php echo $arrS1['ten_chuc_vu']; ?></td>
                     <td><?php echo $arrS1['ngay_tao']; ?></td>
+                  </tr>
+                <?php
+                  $count++;
+                }
+                ?>
+                </tbody>
+              </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </section>
+        <section class="col-lg-6 connectedSortable">
+          <!-- /.card -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Danh sách phòng ban</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Mã phòng </th>
+                    <th>Tên phòng</th>
+                    <th>Ngày tạo</th>
+                  </tr>
+                </thead>
+                <?php
+                $count = 1;
+                foreach ($arrShow as $arrS) {
+                ?>
+                  <tr>
+                    <td><?php echo $count; ?></td>
+                    <td><?php echo $arrS['ma_phong_ban']; ?></td>
+                    <td><?php echo $arrS['ten_phong_ban']; ?></td>
+                    <td><?php echo $arrS['ngay_tao']; ?></td>
                   </tr>
                 <?php
                   $count++;
@@ -375,6 +553,246 @@ while ($row2 = mysqli_fetch_array($result1)) {
       "responsive": true,
     });
   });
+</script>
+<script>
+  $(function() {
+    /* ChartJS
+     * -------
+     * Here we will create a few charts using ChartJS
+     */
+
+    //--------------
+    //- AREA CHART -
+    //--------------
+    // Get context with jQuery - using jQuery's .get() method.
+    var areaChartCanvas = $('#areaChart').get(0).getContext('2d')
+
+    var areaChartData = {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: [{
+          label: 'Digital Goods',
+          backgroundColor: 'rgba(60,141,188,0.9)',
+          borderColor: 'rgba(60,141,188,0.8)',
+          pointRadius: false,
+          pointColor: '#3b8bba',
+          pointStrokeColor: 'rgba(60,141,188,1)',
+          pointHighlightFill: '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data: [28, 48, 40, 19, 86, 27, 90]
+        },
+        {
+          label: 'Electronics',
+          backgroundColor: 'rgba(210, 214, 222, 1)',
+          borderColor: 'rgba(210, 214, 222, 1)',
+          pointRadius: false,
+          pointColor: 'rgba(210, 214, 222, 1)',
+          pointStrokeColor: '#c1c7d1',
+          pointHighlightFill: '#fff',
+          pointHighlightStroke: 'rgba(220,220,220,1)',
+          data: [65, 59, 80, 81, 56, 55, 40]
+        },
+      ]
+    }
+
+    var areaChartOptions = {
+      maintainAspectRatio: false,
+      responsive: true,
+      legend: {
+        display: false
+      },
+      scales: {
+        xAxes: [{
+          gridLines: {
+            display: false,
+          }
+        }],
+        yAxes: [{
+          gridLines: {
+            display: false,
+          }
+        }]
+      }
+    }
+
+    // This will get the first returned node in the jQuery collection.
+    new Chart(areaChartCanvas, {
+      type: 'line',
+      data: areaChartData,
+      options: areaChartOptions
+    })
+    $('#areaChart').closest('.card').hide();
+    //-------------
+    //- LINE CHART -
+    //--------------
+//--------------
+/// Chuyển đổi dữ liệu PHP sang JavaScript
+var months = <?php echo $months_json; ?>;
+var newHiresData = <?php echo $new_hires_json; ?>;
+var resignationsData = <?php echo $resignations_json; ?>;
+
+// Cài đặt Line Chart
+var lineChartCanvas = $('#lineChart').get(0).getContext('2d');
+var lineChartOptions = {
+  maintainAspectRatio: false,
+  responsive: true,
+  datasetFill: false,
+  scales: {
+    x: {
+      display: true,
+      labels: months, // Gán các tháng vào trục X
+      grid: {
+        display: false, // Tắt các đường kẻ dọc
+      }
+    },
+    y: {
+      beginAtZero: true,
+      title: {
+        display: true,
+        text: 'Số lượng',
+      },
+      grid: {
+        display: false, // Tắt các đường kẻ ngang
+      }
+    }
+  }
+};
+
+var lineChartData = {
+  labels: months, // Tên các tháng
+  datasets: [{
+      label: 'Nhân viên mới',
+      data: newHiresData, // Dữ liệu số lượng nhân viên mới
+      fill: false,
+      borderColor: '#00a65a', // Màu cho đường biểu đồ của nhân viên mới
+      tension: 0.1 // Để hiển thị đường cong
+    },
+    {
+      label: 'Nhân viên nghỉ việc',
+      data: resignationsData, // Dữ liệu số lượng nhân viên nghỉ việc
+      fill: false,
+      borderColor: '#f56954', // Màu cho đường biểu đồ của nhân viên nghỉ việc
+      tension: 0.1 // Để hiển thị đường cong
+    }
+  ]
+};
+
+// Tạo Line Chart
+new Chart(lineChartCanvas, {
+  type: 'line',
+  data: lineChartData,
+  options: lineChartOptions
+});
+
+
+
+    //-------------
+    //- DONUT CHART -
+    //-------------
+    // Get context with jQuery - using jQuery's .get() method.
+    var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+    var donutData = {
+      labels: [
+        'Chrome',
+        'IE',
+        'FireFox',
+        'Safari',
+        'Opera',
+        'Navigator',
+      ],
+      datasets: [{
+        data: [700, 500, 400, 600, 300, 100],
+        backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+      }]
+    }
+    var donutOptions = {
+      maintainAspectRatio: false,
+      responsive: true,
+    }
+    //Create pie or douhnut chart
+    // You can switch between pie and douhnut using the method below.
+    new Chart(donutChartCanvas, {
+      type: 'doughnut',
+      data: donutData,
+      options: donutOptions
+    })
+    $('#donutChart').closest('.card').hide();
+    //-------------
+    //- PIE CHART -
+    //-------------
+    // Chuyển đổi dữ liệu PHP sang JavaScript
+    var pieLabels = <?php echo $labels_json; ?>;
+    var pieData = <?php echo $data_json; ?>;
+
+    // Cài đặt Pie Chart
+    var pieChartCanvas = $('#pieChart').get(0).getContext('2d');
+    var pieOptions = {
+      maintainAspectRatio: false,
+      responsive: true,
+    };
+
+    var pieData = {
+      labels: pieLabels, // Danh sách phòng ban
+      datasets: [{
+        data: pieData, // Số lượng nhân viên theo từng phòng ban
+        backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'], // Màu sắc cho các phần
+      }]
+    };
+
+    // Tạo biểu đồ Pie
+    new Chart(pieChartCanvas, {
+      type: 'pie',
+      data: pieData,
+      options: pieOptions
+    });
+
+    //-------------
+    //- BAR CHART -
+    //-------------
+    var barChartCanvas = $('#barChart').get(0).getContext('2d')
+    var barChartData = $.extend(true, {}, areaChartData)
+    var temp0 = areaChartData.datasets[0]
+    var temp1 = areaChartData.datasets[1]
+    barChartData.datasets[0] = temp1
+    barChartData.datasets[1] = temp0
+
+    var barChartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      datasetFill: false
+    }
+
+    new Chart(barChartCanvas, {
+      type: 'bar',
+      data: barChartData,
+      options: barChartOptions
+    })
+    $('#barChart').closest('.card').hide();
+    //---------------------
+    //- STACKED BAR CHART -
+    //---------------------
+    var stackedBarChartCanvas = $('#stackedBarChart').get(0).getContext('2d')
+    var stackedBarChartData = $.extend(true, {}, barChartData)
+
+    var stackedBarChartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        xAxes: [{
+          stacked: true,
+        }],
+        yAxes: [{
+          stacked: true
+        }]
+      }
+    }
+
+    new Chart(stackedBarChartCanvas, {
+      type: 'bar',
+      data: stackedBarChartData,
+      options: stackedBarChartOptions
+    })
+    $('#stackedBarChart').closest('.card').hide();
+  })
 </script>
 
 </html>

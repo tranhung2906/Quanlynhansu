@@ -1,16 +1,22 @@
 <?php
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 session_start();
-// Show data
-$nhanvien_id = $_SESSION['nv_id'];
-include 'config/db_connect.php';
-if ($_SESSION['level'] == 1) {
-    // Nếu là quản trị viên, lấy tất cả lịch tuần
-    $showData = "SELECT * FROM nhan_vien JOIN lich_tuan ON lich_tuan.nhan_vien_id = nhan_vien.id";
-} else {
-    // Nếu là nhân viên, chỉ lấy lịch tuần của nhân viên đăng nhập
-    $showData = "SELECT * FROM nhan_vien JOIN lich_tuan ON lich_tuan.nhan_vien_id = nhan_vien.id WHERE nhan_vien.id = '$nhanvien_id'";
+$today = date('Y-m-d');
+include('config/db_connect.php');
+$sql_check = "SELECT * FROM cham_cong WHERE DATE(ngay_cham) != '$today'"; // Kiểm tra ngày của bản ghi
+$result_check = mysqli_query($conn, $sql_check);
+if (mysqli_num_rows($result_check) > 0) {
+    // Reset trạng thái chấm công về 0
+    $sql_reset = "UPDATE cham_cong SET trang_thai_cham = 0 WHERE trang_thai_cham = 1";
+    if (mysqli_query($conn, $sql_reset)) {
+        echo "Đã reset trạng thái chấm công thành công!";
+    } else {
+        echo "Lỗi khi reset trạng thái chấm công!";
+    }
 }
+// Show data
+include 'config/db_connect.php';
+$showData = "SELECT * FROM nhan_vien JOIN cham_cong ON nhan_vien.id = cham_cong.nhanvien_id WHERE trang_thai=1";
 $result = mysqli_query($conn, $showData);
 $arrShow = array();
 while ($row1 = mysqli_fetch_array($result)) {
@@ -51,6 +57,7 @@ while ($row1 = mysqli_fetch_array($result)) {
     <link rel="stylesheet" href=" plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href=" plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href=" plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -77,9 +84,8 @@ while ($row1 = mysqli_fetch_array($result)) {
         </div>
 
         <!-- Sidebar Menu -->
-        <?php include "menu.php"; ?>
-        <!-- /.sidebar-menu -->
-        <!-- /.sidebar-menu -->
+        <?php include "menu.php";  ?>
+        <!-- Sidebar Menu -->
     </div>
     <!-- /.sidebar -->
     </aside>
@@ -90,12 +96,12 @@ while ($row1 = mysqli_fetch_array($result)) {
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Lịch tuần</h1>
+                        <h1>Chấm công</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Quản lý lịch tuần</a></li>
-                            <li class="breadcrumb-item active">Danh sách lịch tuần</li>
+                            <li class="breadcrumb-item"><a href="#">Chấm công</a></li>
+                            <li class="breadcrumb-item active">Chấm công nhân viên</li>
                         </ol>
                     </div>
                 </div>
@@ -106,33 +112,21 @@ while ($row1 = mysqli_fetch_array($result)) {
             <!-- /.card -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Danh sách lịch tuần</h3>
+                    <h3 class="card-title">Chấm công nhân viên</h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                    <form action="" method="post">
+                        <button type='submit' class='btn btn-success' name='chamcongall'><i class='fa fa-check'></i> Chấm công tất cả</button>
+                    </form>
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>STT</th>
-                                <th>Nhiệm vụ</th>
-                                <th>Nhân viên</th>
-                                <th>Ngày bắt đầu</th>
-                                <th>Ngày kết thúc</th>
-                                <th>Người tạo</th>
-                                <th>Ngày tạo </th>
-                                <th>Người sửa</th>
-                                <th>Ngày sửa</th>
-                                <th>Trạng thái</th>
-                                <?php
-                                isset($_SESSION['level']) ? $_SESSION['level'] : '';
-                                if ($_SESSION['level'] == 1) {
-                                    echo "<th>Sửa</th>";
-                                    echo "<th>Xóa</th>";
-                                } else if ($_SESSION['level'] == 0) {
-                                    echo "<th>Hoàn thành</th>";
-                                }
-
-                                ?>
+                                <th>Mã nhân viên</th>
+                                <th>Họ tên</th>
+                                <th>Chấm công</th>
+                                <th>Nghỉ làm</th>
                             </tr>
                         </thead>
                         <?php
@@ -141,34 +135,21 @@ while ($row1 = mysqli_fetch_array($result)) {
                         ?>
                             <tr>
                                 <td><?php echo $count; ?></td>
-                                <td><?php echo $arrS['nhiem_vu']; ?></td>
+                                <td><?php echo $arrS['ma_nv']; ?></td>
                                 <td><?php echo $arrS['ten_nv']; ?></td>
-                                <td><?php echo $arrS['ngay_bat_dau']; ?></td>
-                                <td><?php echo $arrS['ngay_ket_thuc']; ?></td>
-                                <td><?php echo $arrS['nguoi_tao']; ?></td>
-                                <td><?php echo $arrS['ngay_tao']; ?></td>
-                                <td><?php echo $arrS['nguoi_sua']; ?></td>
-                                <td><?php echo $arrS['ngay_sua']; ?></td>
-                                <td><?php
-                                    if ($arrS['trang_thai_cv'] == 1) {
-                                        echo "Đã hoàn thành";
-                                    } else {
-                                        echo "Chưa hoàn thành";
-                                    }
-                                    ?></td>
                                 <?php
-                                isset($_SESSION['level']) ? $_SESSION['level'] : '';
                                 if ($_SESSION['level'] == 1) {
-                                    echo "<td style='width: 10px;'><a href='sua_lich_tuan.php?id=" . $arrS['id'] . "' class='btn bg-orange btn-flat'><i class='fa fa-edit'></i></a></td>";
-                                    echo "<td style='width: 10px;'><a href='xoa_lich_tuan.php?id=" . $arrS['id'] . "' class='btn bg-maroon btn-flat' name='xoa' onclick='return confirm(\"Bạn có chắc chắn muốn xóa lịch tuần?\");'><i class='fa fa-trash'></i></a></td>";
+                                    echo "<td style='width: 10px;'><a href='cham_cong_nv.php?id=" . $arrS['id'] . "' class='btn bg-success btn-flat'><i class='fa fa-check'></i></a></td>";
                                 } else if ($_SESSION['level'] == 0) {
-                                    if($arrS['trang_thai_cv'] == 0){
-                                    echo "<td style='width: 10px;'><a href='cap_nhat_lich_tuan.php?id=" . $arrS['id'] . "' class='btn bg-success btn-flat'><i class='fa fa-check'></i></a></td>";
-                                    }else{
-                                        echo "<td style='width: 10px;'><a class='btn bg-success btn-flat'><i class='fa fa-check'></i></a></td>";  
-                                    }
+                                    echo "<td style='width: 10px;'><a  class='btn bg-maroon btn-flat'><i class='fa fa-trash'></i></a></td>";
                                 }
-
+                                ?>
+                                <?php
+                                if ($_SESSION['level'] == 1) {
+                                    echo "<td style='width: 10px;'><a href='nghi_viec.php?id=" . $arrS['id'] . "' class='btn bg-danger btn-flat'><i class='fa fa-times'></i></a></td>";
+                                } else if ($_SESSION['level'] == 0) {
+                                    echo "<td style='width: 10px;'><a  class='btn bg-maroon btn-flat'><i class='fa fa-trash'></i></a></td>";
+                                }
                                 ?>
                             </tr>
                         <?php
@@ -183,6 +164,36 @@ while ($row1 = mysqli_fetch_array($result)) {
             <!-- /.card -->
         </section>
         <!-- /.content -->
+        <?php
+// Kiểm tra nếu người dùng nhấn nút "Chấm công tất cả"
+if (isset($_POST['chamcongall'])) {
+    include('config/db_connect.php');
+    $ngaycham = date('Y-m-d');
+    
+    // Kiểm tra nếu nhân viên chưa được chấm công
+    $check_query = "SELECT id, trang_thai_cham FROM cham_cong WHERE trang_thai_cham = 0";
+    $result = mysqli_query($conn, $check_query);
+    
+    // Nếu có nhân viên chưa chấm công
+    if (mysqli_num_rows($result) > 0) {
+        // Cập nhật trạng thái chấm công cho tất cả nhân viên chưa chấm công
+        $update = "UPDATE cham_cong SET ngay_cong = ngay_cong + 1, ngay_cham = '$ngaycham', trang_thai_cham = 1 WHERE trang_thai_cham = 0";
+        
+        if (mysqli_query($conn, $update)) {
+            echo "<script>alert('Đã chấm công tất cả nhân viên!'); window.location.href='cham_cong.php';</script>";
+        } else {
+            echo "<script>alert('Có lỗi khi chấm công tất cả nhân viên!');</script>";
+        }
+    } else {
+        // Nếu không có nhân viên nào chưa được chấm công
+        echo "<script>alert('Tất cả nhân viên đã được chấm công!'); window.location.href='cham_cong.php';</script>";
+    }
+
+    // Đóng kết nối cơ sở dữ liệu
+    mysqli_close($conn);
+}
+?>
+
     </div>
     <!-- /.content-wrapper -->
     </div>
@@ -273,6 +284,35 @@ while ($row1 = mysqli_fetch_array($result)) {
             theme: "monokai"
         });
     })
+</script>
+<script>
+    // Hàm tạo thông báo
+    function showAlert(message, type = 'alert-success') {
+        var alertBox = document.createElement('div');
+        alertBox.classList.add('alert', type);
+
+        alertBox.innerHTML = message + '<span class="closebtn" onclick="this.parentElement.style.display=\'none\';">&times;</span>';
+
+        // Thêm thông báo vào container
+        document.getElementById('notificationContainer').appendChild(alertBox);
+
+        // Tự động ẩn toàn bộ thông báo sau 3 giây
+        setTimeout(function() {
+            alertBox.classList.add('fade-out'); // Thêm class để làm mờ dần và trượt ra
+            setTimeout(function() {
+                alertBox.remove(); // Xóa hoàn toàn thông báo sau khi mờ dần
+            }, 600); // Phải phù hợp với thời gian `transition` trong CSS (0.6 giây)
+        }, 3000); // 3 giây trước khi bắt đầu mờ dần
+    }
+
+    // PHP truyền thông báo sang JavaScript
+    var message = "<?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>";
+    var type = "<?php echo htmlspecialchars($type === 'success' ? 'alert-success' : 'alert-danger', ENT_QUOTES, 'UTF-8'); ?>";
+
+    // Nếu có thông báo từ PHP, hiển thị thông báo
+    if (message) {
+        showAlert(message, type);
+    }
 </script>
 <script>
     $(function() {

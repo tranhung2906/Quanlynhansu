@@ -1,10 +1,6 @@
 <?php
 session_start();
 date_default_timezone_set('Asia/Ho_Chi_Minh');
-require_once('config/db_connect.php');
-$sql = "Select * from tbl_menu WHERE is_Active = 'Yes';";
-$query = mysqli_query($conn, $sql);
-$macv = "MCV" . time();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,20 +46,7 @@ $macv = "MCV" . time();
         <div class="preloader flex-column justify-content-center align-items-center">
             <img class="animation__shake" src=" dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
         </div>
-
-      <?php include "navbar.php" ?>
-
-                <!-- SidebarSearch Form -->
-                <div class="form-inline">
-                    <div class="input-group" data-widget="sidebar-search">
-                        <input class="form-control form-control-sidebar" type="search" placeholder="Tìm kiếm..." aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-sidebar">
-                                <i class="fas fa-search fa-fw"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+<?php include"navbar.php"; ?>
 
                   <!-- Sidebar Menu -->
      <?php include "menu.php";  ?>
@@ -78,13 +61,13 @@ $macv = "MCV" . time();
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Chức vụ</h1>
+                            <h1>Loại kỷ luật</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="index.php">Nhân viên</a></li>
-                                <li class="breadcrumb-item active">Chức vụ</li>
-                                <li class="breadcrumb-item active">Sửa chức vụ</li>
+                                <li class="breadcrumb-item"><a href="index.php">Kỷ luật</a></li>
+                                <li class="breadcrumb-item active">Loại kỷ luật</li>
+                                <li class="breadcrumb-item active">Sửa loại kỷ luật</li>
                             </ol>
                         </div>
                     </div>
@@ -93,35 +76,31 @@ $macv = "MCV" . time();
             <!-- Main content -->
             <section class="content">
                 <?php
-                    if(isset($_GET['id'])){
-                        $id = $_GET['id'];
-                        include "config/db_connect.php";
-                        $truyvan = "SELECT * FROM chuc_vu WHERE id = '$id'";
-                        $que = mysqli_query($conn, $truyvan);
-                        $ketqua = mysqli_fetch_assoc($que);
-                    }
+                if (isset($_GET['id'])) {
+                    $id = $_GET['id'];
+                    include "config/db_connect.php";
+                    $truyvan = "SELECT * FROM loai_khenthuong_kyluat WHERE id = '$id'";
+                    $que = mysqli_query($conn, $truyvan);
+                    $ketqua = mysqli_fetch_assoc($que);
+                }
                 ?>
-                <form action="sua_chuc_vu.php" method="post" enctype="multipart/form-data">
+                <form action="sua_loai_kl.php" method="post" enctype="multipart/form-data">
                     <input type="hidden" value="<?php echo $ketqua['id']  ?>" name="id">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card card-outline card-info">
                                 <div class="card-header">
                                     <h3 class="card-title">
-                                        Chỉnh sửa chức vụ
+                                        Chỉnh sửa loại kỷ luật
                                     </h3>
                                 </div>
                                 <div class="card-body">
-                                    <label for="exampleInputPassword1">Mã chức vụ</label>
-                                    <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $macv  ?>" name="macv" readonly>
+                                    <label for="exampleInputPassword1">Mã loại</label>
+                                    <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $ketqua['ma_loai']   ?>" name="makl" readonly>
                                 </div>
                                 <div class="card-body">
-                                    <label for="exampleInputPassword1">Tên chức vụ </label>
-                                    <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $ketqua['ten_chuc_vu']  ?>" name="tencv" required>
-                                </div>
-                                <div class="card-body">
-                                    <label for="exampleInputPassword1">Lương ngày</label>
-                                    <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $ketqua['luong_ngay']  ?>" name="luong" required>
+                                    <label for="exampleInputPassword1">Tên loại </label>
+                                    <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $ketqua['ten_loai']  ?>" name="tenloai">
                                 </div>
                                 <div class="card-body">
                                     <label for="exampleInputEmail1">Mô tả: </label>
@@ -143,59 +122,64 @@ $macv = "MCV" . time();
                                     <input type="text" class="form-control" id="exampleInputPassword1" readonly name="ngaysua" value="<?php echo date('Y-m-d H:i:s') ?>">
                                 </div>
                                 <div style="margin: 20px;">
-                                <button type='submit' class='btn btn-warning' name='suachucvu'><i class='fa fa-edit'></i> Lưu lại</button>
-                            </div>
+                                <?php 
+                                    if ($_SESSION['level'] == 1){
+                                         echo "<button type='submit' class='btn btn-warning' name='sualoaikl'><i class='fa fa-edit'></i> Lưu lại</button>";
+                                    }else if($_SESSION['level'] == 0){
+                                        echo "<button type='button' class='btn btn-warning' ><i class='fa fa-edit'></i> Lưu lại</button>";
+                                        }
+                                        ?>
+                                    
+                                </div>
                                 <!-- /.col-->
-                            </div>                         
+                            </div>
                         </div>
                     </div>
                 </form>
-                </div>
-                <!-- /.card -->
+        </div>
+        <!-- /.card -->
 
-            </section>
-            <?php
-include 'config/db_connect.php';
+        </section>
+        <?php
+        include 'config/db_connect.php';
 
-if (isset($_POST['suachucvu'])) {
+        if (isset($_POST['sualoaikl'])) {
 
-    $id = $_POST['id']; 
-    $macv = $_POST['macv']; 
-    $tencv = $_POST['tencv']; 
-    $luong = $_POST['luong'];
-    $mota = $_POST['description']; 
-    $nguoisua = $_POST['nguoisua'];
-    $ngaysua = $_POST['ngaysua'];
+            $id = $_POST['id'];
+            $makl = $_POST['maloai'];
+            $tenloai = $_POST['tenloai'];
+            $mota = $_POST['description'];
+            $nguoisua = $_POST['nguoisua'];
+            $ngaysua = $_POST['ngaysua'];
 
-    // Kiểm tra các trường nhập vào có đầy đủ không
-    if (!empty($macv) && !empty($tencv) && !empty($luong)) {
-        // Câu lệnh SQL để cập nhật thông tin chức vụ trong bảng "chuc_vu"
-        $sql = "UPDATE chuc_vu 
-                SET ten_chuc_vu = '$tencv', 
-                    luong_ngay = '$luong', 
+            // Kiểm tra các trường nhập vào có đầy đủ không
+            if (!empty($tenloai)) {
+                // Câu lệnh SQL để cập nhật thông tin chức vụ trong bảng "chuc_vu"
+                $sql = "UPDATE loai_khenthuong_kyluat
+                SET ten_loai = '$tenloai', 
                     ghi_chu = '$mota', 
                     nguoi_sua = '$nguoisua', 
                     ngay_sua = '$ngaysua' 
                 WHERE id = '$id'";
 
-        if (mysqli_query($conn, $sql)) {
+                if (mysqli_query($conn, $sql)) {
 
-            echo "<script>alert('Cập nhật chức vụ thành công!'); window.location.href = 'them_chuc_vu.php';</script>";
-        } else {
-            // Nếu có lỗi khi cập nhật, hiển thị thông báo lỗi
-            echo "<script>alert('Có lỗi xảy ra khi cập nhật chức vụ!');</script>";
+                    echo "<script>alert('Cập nhật thành công!'); window.location.href = 'loai_ky_luat.php';</script>";
+                } else {
+                    // Nếu có lỗi khi cập nhật, hiển thị thông báo lỗi
+                    echo "<script>alert('Có lỗi xảy ra !');</script>";
+                }
+            } else {
+                // Nếu các trường không đầy đủ, hiển thị thông báo
+                echo "<script>alert('Vui lòng nhập đầy đủ thông tin!');</script>";
+            }
         }
-    } else {
-        // Nếu các trường không đầy đủ, hiển thị thông báo
-        echo "<script>alert('Vui lòng nhập đầy đủ thông tin!');</script>";
-    }
-}
-mysqli_close($conn);
-?>
+        mysqli_close($conn);
+        ?>
 
-            <!-- /.content -->
-        </div>
-        <!-- /.content-wrapper -->
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
     </div>
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
@@ -267,4 +251,5 @@ mysqli_close($conn);
         });
     })
 </script>
+
 </html>

@@ -1,14 +1,32 @@
 <?php
 session_start();
-date_default_timezone_set('Asia/Ho_Chi_Minh');
-$malt = "MLT" . time();
-// show data
-include "config/db_connect.php";
-$nv = "SELECT id, ma_nv, ten_nv FROM nhan_vien WHERE trang_thai <> 0";
-$resultNV = mysqli_query($conn, $nv);
-$arrNV = array();
-while ($rowNV = mysqli_fetch_array($resultNV)) {
-    $arrNV[] = $rowNV;
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    include "config/db_connect.php";
+    // hien thi record
+    $kt = "SELECT * FROM khenthuong_kyluat WHERE ma_kt = '$id'";
+    $resultKT = mysqli_query($conn, $kt);
+    $rowKT = mysqli_fetch_array($resultKT);
+    // set value active
+    $nvAC = "SELECT nv.id as idAC, ma_nv, ten_nv, lktkl.id as loai_id, ten_loai FROM khenthuong_kyluat ktkl, nhan_vien nv, loai_khenthuong_kyluat lktkl WHERE nv.id = ktkl.nhanvien_id AND lktkl.id = ktkl.loai_kt_id AND  ma_kt = '$id'";
+    $resultNVAC = mysqli_query($conn, $nvAC);
+    $rowNVAC = mysqli_fetch_array($resultNVAC);
+    $idNVAC = $rowNVAC['idAC'];
+    $loaiAC = $rowNVAC['loai_id'];
+    // hien thi loai khen thuong
+    $showData = "SELECT id, ma_loai, ten_loai FROM loai_khenthuong_kyluat WHERE id <> $loaiAC AND flag = 0 ORDER BY ngay_tao DESC";
+    $result = mysqli_query($conn, $showData);
+    $arrShow = array();
+    while ($row = mysqli_fetch_array($result)) {
+        $arrShow[] = $row;
+    }
+    // hien thi nhan vien
+    $nv = "SELECT id, ma_nv, ten_nv FROM nhan_vien WHERE id <> $idNVAC";
+    $resultNV = mysqli_query($conn, $nv);
+    $arrNV = array();
+    while ($rowNV = mysqli_fetch_array($resultNV)) {
+        $arrNV[] = $rowNV;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -20,7 +38,6 @@ while ($rowNV = mysqli_fetch_array($resultNV)) {
     <title>QUẢN LÝ NHÂN SỰ</title>
     <!-- Favicon  -->
     <link rel="icon" href="img/logo_web.png">
-
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
@@ -82,12 +99,12 @@ while ($rowNV = mysqli_fetch_array($resultNV)) {
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Lịch tuần</h1>
+                        <h1>Kỷ luật</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="index.php">Quản lý lịch tuần</a></li>
-                            <li class="breadcrumb-item active">Tạo lịch tuần</li>
+                            <li class="breadcrumb-item"><a href="index.php">Kỷ luật</a></li>
+                            <li class="breadcrumb-item active">Sửa kỷ luật</li>
                         </ol>
                     </div>
                 </div>
@@ -95,34 +112,35 @@ while ($rowNV = mysqli_fetch_array($resultNV)) {
         </section>
         <!-- Main content -->
         <section class="content">
-            <form action="tao_lich_tuan.php" method="post" enctype="multipart/form-data">
+            <form action="sua_ky_luat.php" method="post" enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
                             <div class="card-header">
                                 <h3 class="card-title">
-                                    Tạo lịch tuần
+                                    Chỉnh sửa kỷ luật
                                 </h3>
                             </div>
-                            <?php
-                            if ($_SESSION['level'] == 0) {
-                                echo '<div class="card-body">
-                                <div class=" alert alert-danger alert-dismissible">
-                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                              <h5><i class="icon fas fa-ban"></i> Thông báo!</h5>
-                                 Bạn không đủ thẩm quyền để thực hiện chức năng này!
-                               </div> 
-                                </div>';
-                            }
-                            ?>
                             <div class="card-body">
-                                <label for="exampleInputPassword1">Mã lịch tuần</label>
-                                <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $malt  ?>" name="malt" readonly>
+                                <label for="exampleInputPassword1">Mã kỷ luật</label>
+                                <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $id ?>" name="makt" readonly>
                             </div>
                             <div class="card-body">
-                                <label for="status">Nhân viên </label>
+                                <label for="exampleInputPassword1">Số quyết định</label>
+                                <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $rowKT['so_qd']; ?>" name="soqd">
+                            </div>
+                            <div class="card-body">
+                                <label for="exampleInputPassword1">Ngày quyết định</label>
+                                <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo date_format(date_create($rowKT['ngay_qd']), 'Y-m-d'); ?>" name="ngayqd">
+                            </div>
+                            <div class="card-body">
+                                <label for="exampleInputPassword1">Tên kỷ luật</label>
+                                <input type="text" class="form-control" id="exampleInputPassword1" value="<?php echo $rowKT['ten_khen_thuong']; ?>" name="tenkt">
+                            </div>
+                            <div class="card-body">
+                                <label for="status">Nhân viên <span style="color: red;">*</span> </label>
                                 <select class="form-control" name="nhanvien" id="status" required>
-                                    <option>--Chọn nhân viên--</option>
+                                    <option value="<?php echo $rowNVAC['idAC']; ?>"><?php echo $rowNVAC['ma_nv']; ?> - <?php echo $rowNVAC['ten_nv']; ?></option>
                                     <?php
                                     foreach ($arrNV as $nv) {
                                         echo "<option value='" . $nv['id'] . "'>" . $nv['ma_nv'] . " - " . $nv['ten_nv'] . "</option>";
@@ -131,50 +149,45 @@ while ($rowNV = mysqli_fetch_array($resultNV)) {
                                 </select>
                             </div>
                             <div class="card-body">
-                                <label for="exampleInputPassword1">Nhiệm vụ</label>
-                                <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Nhập nhiệm vụ cần giao" name="nhiemvu" required>
-                            </div>
-                            <div class="card-body">
-                                <label for="exampleInputPassword1">Ngày bắt đầu</label>
-                                <input type="text" class="form-control" id="exampleInputPassword1" readonly name="ngaybatdau" value="<?php echo date('Y-m-d H:i:s') ?>">
-                            </div>
-                            <div class="card-body">
-                                <label for="exampleInputPassword1">Ngày kết thúc</label>
-                                <input type="date" class="form-control" id="exampleInputPassword1" name="ngayketthuc">
-                            </div>
-                            <div class="card-body">
-                                <label for="exampleInputEmail1">Mô tả: </label>
-                                <textarea id="summernote" name="description">
-                                    </textarea>
-                            </div>
-                            <div class="card-body">
-                                <label for="status">Trạng thái công việc <b style="color: red;">*</b></label>
-                                <select class="form-control" name="status" id="status" required>
-                                    <option>--Chọn trạng thái--</option>
-                                    <option value="0">Chưa hoàn thành</option>
-                                    <option value="1">Đã hoàn thành</option>
+                                <label for="status">Loại kỷ luật </label>
+                                <select class="form-control" name="loaikt" id="status" required>
+                                    <option value="<?php echo $rowNVAC['loai_id']; ?>"><?php echo $rowNVAC['ten_loai']; ?></option>
+                                    <?php
+                                    foreach ($arrShow as $arrS) {
+                                        echo "<option value='" . $arrS['id'] . "'>" . $arrS['ten_loai'] . "</option>";
+                                    }
+                                    ?>
                                 </select>
                             </div>
                             <div class="card-body">
-                                <label for="exampleInputPassword1">Người tạo</label>
+                                <label for="exampleInputPassword1">Số tiền phạt <span style="color: red;">*</span></label>
+                                <input type="number" class="form-control" id="exampleInputPassword1" value="<?php echo $rowKT['so_tien']; ?>" name="tienthuong">
+                            </div>
+                            <div class="card-body">
+                                <label for="exampleInputEmail1">Mô tả: </label>
+                                <textarea id="summernote" name="description"> <?php echo $rowKT['ghi_chu']; ?>
+                                    </textarea>
+                            </div>
+                            <div class="card-body">
+                                <label for="exampleInputPassword1">Người sửa</label>
                                 <input type="text" class="form-control" id="exampleInputPassword1"
                                     value="<?php
                                             echo isset($_SESSION['user_firstname']) ? $_SESSION['user_firstname'] : '';
                                             echo ' ';
                                             echo isset($_SESSION['user_lastname']) ? $_SESSION['user_lastname'] : '';
                                             ?>"
-                                    name="nguoitao" readonly>
+                                    name="nguoisua" readonly>
                             </div>
                             <div class="card-body">
-                                <label for="exampleInputPassword1">Ngày tạo</label>
-                                <input type="text" class="form-control" id="exampleInputPassword1" readonly name="ngaytao" value="<?php echo date('Y-m-d H:i:s') ?>">
+                                <label for="exampleInputPassword1">Ngày sửa</label>
+                                <input type="text" class="form-control" id="exampleInputPassword1" readonly name="ngaysua" value="<?php echo date('Y-m-d H:i:s') ?>">
                             </div>
                             <div style="margin: 20px;">
                                 <?php
                                 if ($_SESSION['level'] == 1) {
-                                    echo "<button type='submit' class='btn btn-primary' name='taolichtuan'><i class='fa fa-plus'></i> Tạo lịch tuần</button>";
+                                    echo "<button type='submit' class='btn btn-primary' name='suakyluat'><i class='fa fa-save'></i> Lưu lại</button>";
                                 } else if ($_SESSION['level'] == 0) {
-                                    echo "<button type='button' class='btn btn-primary'><i class='fa fa-plus'></i> Tạo lịch tuần</button>";
+                                    echo "<button type='button' class='btn btn-primary'><i class='fa fa-plus'></i> Lưu lại</button>";
                                 }
                                 ?>
                             </div>
@@ -183,44 +196,46 @@ while ($rowNV = mysqli_fetch_array($resultNV)) {
                     </div>
                 </div>
             </form>
-            <!-- /.card -->
-
         </section>
         <?php
-        // Kết nối cơ sở dữ liệu
-        include 'config/db_connect.php';
+        include "config/db_connect.php";
 
-        // Kiểm tra nếu người dùng đã gửi form
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['taolichtuan'])) {
+        if (isset($_POST['suakyluat'])) {
             // Lấy dữ liệu từ form
-            $malt = $_POST['malt'];
+            $makt = $_POST['makt'];
+            $soqd = $_POST['soqd'];
+            $ngayqd = $_POST['ngayqd'];
+            $tenkt = $_POST['tenkt'];
             $nhanvien_id = $_POST['nhanvien'];
-            $nhiemvu = $_POST['nhiemvu'];
-            $ngaybatdau = $_POST['ngaybatdau'];
-            $ngayketthuc = $_POST['ngayketthuc'];
+            $loai_id = $_POST['loaikt'];
+            $tienthuong = $_POST['tienthuong'];
             $description = $_POST['description'];
-            $status = $_POST['status'];
-            $nguoitao = $_POST['nguoitao'];
-            $ngaytao = $_POST['ngaytao'];
-            // Kiểm tra các trường cần thiết đã được nhập
-            if (!empty($nhanvien_id) && !empty($nhiemvu) && !empty($ngaybatdau) && !empty($ngayketthuc) && isset($status)) {
-                // Chuẩn bị câu lệnh SQL để thêm lịch tuần
-                $sql = "INSERT INTO lich_tuan (ma_lt, nhan_vien_id, nhiem_vu, ngay_bat_dau, ngay_ket_thuc, ghi_chu, trang_thai_cv, nguoi_tao, ngay_tao) 
-                VALUES ('$malt', '$nhanvien_id', '$nhiemvu', '$ngaybatdau', '$ngayketthuc', '$description', '$status', '$nguoitao', '$ngaytao')";
-                if (mysqli_query($conn, $sql)) {
-
-                    echo "<script>alert('Tạo lịch tuần thành công!'); window.location.href = 'danh_sach_lich_tuan.php';</script>";
+            $nguoisua = $_POST['nguoisua'];
+            $ngaysua = $_POST['ngaysua'];
+            if ($tienthuong > 2000000) {
+                echo "<script>alert('Số tiền thưởng không hợp lệ!'); window.history.back();</script>";
+            } else {
+            if ($conn) {
+                // Câu truy vấn cập nhật dữ liệu khen thưởng
+                $query = "UPDATE khenthuong_kyluat 
+                  SET so_qd = '$soqd', ngay_qd = '$ngayqd', ten_khen_thuong = '$tenkt', nhanvien_id = '$nhanvien_id', 
+                      loai_kt_id = '$loai_id', so_tien = '$tienthuong', ghi_chu = '$description', nguoi_sua = '$nguoisua', ngay_sua = '$ngaysua'
+                  WHERE ma_kt = '$makt'";
+                // Thực hiện cập nhật
+                if (mysqli_query($conn, $query)) {
+                    echo "<script>alert('Cập nhật kỷ luật thành công!'); window.location.href = 'tao_ky_luat.php';</script>";
                 } else {
-                    // Nếu có lỗi khi cập nhật, hiển thị thông báo lỗi
-                    echo "<script>alert('Có lỗi xảy ra !');</script>";
+                    echo "<script>alert('Cập nhật kỷ luật thất bại: " . mysqli_error($conn) . "');</script>";
                 }
             } else {
-                // Nếu các trường không đầy đủ, hiển thị thông báo
-                echo "<script>alert('Vui lòng nhập đầy đủ thông tin!');</script>";
+                echo "<script>alert('Không thể kết nối tới cơ sở dữ liệu');</script>";
             }
+            // Đóng kết nối
+            mysqli_close($conn);
         }
-        mysqli_close($conn);
+    }
         ?>
+
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->

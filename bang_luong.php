@@ -133,7 +133,7 @@ if (isset($_SESSION['save'])) {
             <img class="animation__shake" src=" dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
         </div>
 
-        <?php include "navbar2.php" ?>
+        <?php include "navbar.php" ?>
 
         <!-- SidebarSearch Form -->
         <div class="form-inline">
@@ -170,7 +170,6 @@ if (isset($_SESSION['save'])) {
                                 <div class="small-box bg-maroon">
                                     <div class="inner">
                                         <h3>LƯƠNG</h3>
-
                                         <p>Tính lương</p>
                                     </div>
                                     <div class="icon">
@@ -250,9 +249,9 @@ if (isset($_SESSION['save'])) {
                                 <td><?php echo $arrS['ma_luong']; ?></td>
                                 <td><?php echo $arrS['ten_nv']; ?></td>
                                 <td><?php echo $arrS['ten_chuc_vu']; ?></td>
-                                <td><?php echo number_format($arrS['luong_thang'], 0, '', ','); ?> VNĐ</td>
+                                <td><?php echo number_format($arrS['luong_thang'], 0, '.', ','); ?> VNĐ</td>
                                 <td><?php echo $arrS['ngay_cong']; ?></td>
-                                <td><?php echo number_format($arrS['thuc_lanh'], 0, '', ','); ?> VNĐ</td>
+                                <td><?php echo number_format($arrS['thuc_lanh'], 0, '.', ','); ?> VNĐ</td>
                                 <td><?php echo $arrS['ngay_cham']; ?></td>
                                 <td style='width: 10px;'><a href="chi_tiet_luong.php?id=<?php echo $arrS['idNhanVien'] ?>" class='btn bg-primary btn-flat' name='editaccount'"><i class='fa fa-eye'></i></a></td>
                                     <?php
@@ -402,6 +401,7 @@ if (isset($_SESSION['save'])) {
             "responsive": true,
             "lengthChange": false,
             "autoWidth": false,
+            "buttons": ["csv", "excel", "pdf",]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         $('#example2').DataTable({
             "paging": true,
