@@ -1,26 +1,13 @@
 <?php
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 session_start();
-$today = date('Y-m-d');
-include('config/db_connect.php');
-$sql_check = "SELECT * FROM cham_cong WHERE DATE(ngay_cham) != '$today'"; // Kiểm tra ngày của bản ghi
-$result_check = mysqli_query($conn, $sql_check);
-if (mysqli_num_rows($result_check) > 0) {
-    // Reset trạng thái chấm công về 0
-    $sql_reset = "UPDATE cham_cong SET trang_thai_cham = 0 WHERE trang_thai_cham = 1";
-    if (mysqli_query($conn, $sql_reset)) {
-        echo "";
-    } else {
-        echo "";
-    }
-}
 // Show data
 include 'config/db_connect.php';
-$showData = "SELECT * FROM nhan_vien JOIN cham_cong ON nhan_vien.id = cham_cong.nhanvien_id WHERE trang_thai=1";
-$result = mysqli_query($conn, $showData);
-$arrShow = array();
-while ($row1 = mysqli_fetch_array($result)) {
-    $arrShow[] = $row1;
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $showData = "SELECT * FROM tai_khoan WHERE id = $id";
+    $result = mysqli_query($conn, $showData);
+    $row1 = mysqli_fetch_array($result);
 }
 ?>
 <!DOCTYPE html>
@@ -58,8 +45,6 @@ while ($row1 = mysqli_fetch_array($result)) {
     <link rel="stylesheet" href=" plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href=" plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 
-</head>
-
 <body class="hold-transition sidebar-mini layout-fixed">
     <!-----------Modal end------>
     <div class="wrapper">
@@ -82,10 +67,10 @@ while ($row1 = mysqli_fetch_array($result)) {
                 </div>
             </div>
         </div>
-
         <!-- Sidebar Menu -->
         <?php include "menu.php";  ?>
         <!-- Sidebar Menu -->
+        <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
     </aside>
@@ -96,12 +81,13 @@ while ($row1 = mysqli_fetch_array($result)) {
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Chấm công</h1>
+                        <h1>Thông tin tài khoản</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Chấm công</a></li>
-                            <li class="breadcrumb-item active">Chấm công nhân viên</li>
+                            <li class="breadcrumb-item"><a href="#">Nhân viên</a></li>
+                            <li class="breadcrumb-item active">Danh sách nhân viên</li>
+                            <li class="breadcrumb-item active">Thông tin nhân viên</li>
                         </ol>
                     </div>
                 </div>
@@ -110,104 +96,64 @@ while ($row1 = mysqli_fetch_array($result)) {
         <!-- Main content -->
         <section class="content">
             <!-- /.card -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Chấm công nhân viên</h3>
+            <div class="login-box">
+                <div class="card card-outline card-primary">
+                    <div class="card-header text-center">
+                        <a href="../../index2.html" class="h1">Đổi mật khẩu</a>
+                    </div>
+                    <div class="card-body">
+                        <p class="login-box-msg">Hãy nhập mật khẩu muốn thay dổi của bạn!</p>
+                        <form action="doimatkhau.php" method="post">
+                            <input type="hidden" name="id" value="<?php echo $row1['id'] ?>">
+                            <div class="input-group mb-3">
+                                <input type="password" class="form-control" placeholder="Nhập mật khẩu mới" name="newpass">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="password" class="form-control" placeholder="Nhập lại mật khẩu mới" name="cpass">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary btn-block">Thay đổi</button>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.login-card-body -->
                 </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <form action="" method="post">
-                        <?php if($_SESSION['level']==1){ ?>
-                        <button type='submit' class='btn btn-success' name='chamcongall'><i class='fa fa-check'></i> Chấm công tất cả</button>
-                        <?php }else{
-                            echo '
-                                <div class=" alert alert-danger alert-dismissible">
-                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                              <h5><i class="icon fas fa-ban"></i> Thông báo!</h5>
-                                 Bạn không đủ thẩm quyền để thực hiện chức năng này!
-                               </div> 
-                               '; } ?>
-                    </form>
-                    <table id="example1" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Mã nhân viên</th>
-                                <th>Họ tên</th>
-                                <th>Chấm công</th>
-                                <th>Nghỉ làm</th>
-                            </tr>
-                        </thead>
-                        <?php
-                        $count = 1;
-                        foreach ($arrShow as $arrS) {
-                        ?>
-                            <tr>
-                                <td><?php echo $count; ?></td>
-                                <td><?php echo $arrS['ma_nv']; ?></td>
-                                <td><?php echo $arrS['ten_nv']; ?></td>
-                                <?php
-                                if ($_SESSION['level'] == 1) {
-                                    echo "<td style='width: 10px;'><a href='cham_cong_nv.php?id=" . $arrS['id'] . "' class='btn bg-success btn-flat'><i class='fa fa-check'></i></a></td>";
-                                } else if ($_SESSION['level'] == 0) {
-                                    echo "<td style='width: 10px;'><a  class='btn bg-success btn-flat'><i class='fa fa-check'></i></a></td>";
-                                }
-                                ?>
-                                <?php
-                                if ($_SESSION['level'] == 1) {
-                                    echo "<td style='width: 10px;'><a href='nghi_viec.php?id=" . $arrS['id'] . "' class='btn bg-danger btn-flat'><i class='fa fa-times'></i></a></td>";
-                                } else if ($_SESSION['level'] == 0) {
-                                    echo "<td style='width: 10px;'><a  class='btn bg-maroon btn-flat'><i class='fa fa-trash'></i></a></td>";
-                                }
-                                ?>
-                            </tr>
-                        <?php
-                            $count++;
-                        }
-                        ?>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- /.card-body -->
             </div>
-            <!-- /.card -->
         </section>
         <!-- /.content -->
         <?php
-// Kiểm tra nếu người dùng nhấn nút "Chấm công tất cả"
-if (isset($_POST['chamcongall'])) {
-    include('config/db_connect.php');
-    $ngaycham = date('Y-m-d');
-    
-    // Kiểm tra nếu nhân viên chưa được chấm công
-    $check_query = "SELECT id, trang_thai_cham FROM cham_cong WHERE trang_thai_cham = 0";
-    $result = mysqli_query($conn, $check_query);
-    
-    // Nếu có nhân viên chưa chấm công
-    if (mysqli_num_rows($result) > 0) {
-        // Cập nhật trạng thái chấm công cho tất cả nhân viên chưa chấm công
-        $update = "UPDATE cham_cong SET ngay_cong = ngay_cong + 1, ngay_cham = '$ngaycham', trang_thai_cham = 1 WHERE trang_thai_cham = 0";
-        
-        if (mysqli_query($conn, $update)) {
-            echo "<script>alert('Đã chấm công tất cả nhân viên!'); window.location.href='cham_cong.php';</script>";
-        } else {
-            echo "<script>alert('Có lỗi khi chấm công tất cả nhân viên!');</script>";
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $newpass = $_POST['newpass'];
+            $cpass = $_POST['cpass'];
+            $id = $_POST['id'];
+            if ($newpass != $cpass) {
+                echo "<script>alert('Mật khẩu không khớp!')</script>";
+            } else {
+                $sql = "UPDATE tai_khoan SET mat_khau = '$cpass' WHERE id = $id";
+                if (mysqli_query($conn, $sql)) {
+                    echo "<script>alert('Đổi mật khẩu thành công!'); window.location.href = 'login.php'</script>";
+                }
+            }
         }
-    } else {
-        // Nếu không có nhân viên nào chưa được chấm công
-        echo "<script>alert('Tất cả nhân viên đã được chấm công!'); window.location.href='cham_cong.php';</script>";
-    }
-
-    // Đóng kết nối cơ sở dữ liệu
-    mysqli_close($conn);
-}
-?>
-
+        ?>
     </div>
     <!-- /.content-wrapper -->
     </div>
     <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
+    <aside class=" control-sidebar control-sidebar-dark">
         <!-- Control sidebar content goes here -->
     </aside>
     <!-- /.control-sidebar -->

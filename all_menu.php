@@ -77,8 +77,6 @@ $query = mysqli_query($conn, $sql);
     color: white;
   }
 </style>
-
-
 </head>
 <?php
 session_start();

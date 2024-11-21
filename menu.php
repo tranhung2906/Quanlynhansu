@@ -256,7 +256,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/tables/data.html" class="nav-link">
+                            <a href="doimatkhau.php?id=<?php echo $_SESSION['user_id'] ?>" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Đổi mật khẩu</p>
                             </a>

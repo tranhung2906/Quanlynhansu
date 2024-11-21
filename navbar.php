@@ -45,7 +45,7 @@
                           $image = isset($_SESSION['user_img']) ? $_SESSION['user_img'] : '';
                           $image = str_replace('../', '', $image);
                           echo $image;
-                          ?>"" alt=" User Avatar" class="img-size-50 img-circle mr-3">
+                          ?>" alt=" User Avatar" class="img-size-50 img-circle mr-3">
                 <div class="media-body">
                   <h3 class="dropdown-item-title">
                     <?php
@@ -72,7 +72,7 @@
               <!-- Message End -->
             </a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item dropdown-footer">Thông tin</a>
+            <a href="xemtaikhoan.php?id=<?php echo $_SESSION['user_id']?>" class="dropdown-item dropdown-footer">Thông tin</a>
             <a href="logout.php" class="dropdown-item dropdown-footer">Đăng xuất</a>
           </div>
         </li>

@@ -1,16 +1,19 @@
 <?php
 session_start();
 date_default_timezone_set('Asia/Ho_Chi_Minh');
-require_once('config/db_connect.php');
-$sql = "Select * from tbl_menu WHERE is_Active = 'Yes';";
-$query = mysqli_query($conn, $sql);
 // create code room
 $roomCode = "MBP" . time();
-
+include "config/db_connect.php";
+// show data
+$nv = "SELECT id, ma_nv, ten_nv FROM nhan_vien WHERE trang_thai <> 0";
+$resultNV = mysqli_query($conn, $nv);
+$arrNV = array();
+while ($rowNV = mysqli_fetch_array($resultNV)) {
+  $arrNV[] = $rowNV;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -117,6 +120,17 @@ $roomCode = "MBP" . time();
                 <p class="help-block">Vui lòng chọn file đúng định dạng: jpg, jpeg, png, gif.</p>
               </div>
               <div class="card-body">
+                <label for="status">Nhân viên </label>
+                <select class="form-control" name="nhanvien" id="status" required>
+                  <option>--Chọn nhân viên--</option>
+                  <?php
+                  foreach ($arrNV as $nv) {
+                    echo "<option value='" . $nv['id'] . "'>" . $nv['ma_nv'] . " - " . $nv['ten_nv'] . "</option>";
+                  }
+                  ?>
+                </select>
+              </div>
+              <div class="card-body">
                 <label for="exampleInputPassword1">Họ: <b style="color: red;">*</b></label>
                 <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Nhập họ" name="lastname">
               </div>
@@ -182,6 +196,7 @@ $roomCode = "MBP" . time();
     $lastname = mysqli_real_escape_string($conn, $_POST['lastname']);
     $firstname = mysqli_real_escape_string($conn, $_POST['firstname']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $nhanvien = mysqli_real_escape_string($conn, $_POST['nhanvien']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
     $repass = mysqli_real_escape_string($conn, $_POST['repass']);
     $phone = mysqli_real_escape_string($conn, $_POST['phone']);
@@ -203,8 +218,7 @@ $roomCode = "MBP" . time();
       exit();
     }
 
-    // Xử lý ảnh tải lên
-    $target_dir = "uploads/";  // Thư mục lưu ảnh
+    $target_dir = "uploads/";
     $target_file = $target_dir . basename($_FILES["image"]["name"]);
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
@@ -227,8 +241,8 @@ $roomCode = "MBP" . time();
     }
 
     if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-      $sql = "INSERT INTO tai_khoan (ho, ten, hinh_anh, email, mat_khau, so_dt, quyen, trang_thai) 
-        VALUES ('$firstname', '$lastname', '$target_file', '$email', '$password', '$phone', '$level', '$status')";
+      $sql = "INSERT INTO tai_khoan (ho, ten, nhan_vien_id, hinh_anh, email, mat_khau, so_dt, quyen, trang_thai) 
+        VALUES ('$firstname', '$lastname', '$nhanvien', '$target_file', '$email', '$password', '$phone', '$level', '$status')";
       if ($conn->query($sql) === TRUE) {
         echo "<script>alert('Tạo tài khoản thành công!'); window.location.href='add_account.php';</script>";
       } else {
